@@ -674,8 +674,9 @@
 
 <header>
   <div class="header-inner">
-    <h1>Construire une situation-problème — Guide pas à pas</h1>
-    <p>Certificat d'Aptitudes Pédagogiques · Enseignement secondaire · Belgique francophone</p>
+    <h1 style="text-align:center;font-size:2rem;">Construire une situation-problème — Guide pas à pas</h1>
+    <p style="text-align:center;">Certificat d'Aptitudes Pédagogiques</p>
+    <p style="text-align:center;font-size:0.85rem;margin-top:0.4rem;opacity:0.85;">Réalisé par <a href="https://linktr.ee/peter7nance" target="_blank" rel="noopener" style="color:inherit;text-decoration:underline;">Pierre-Yves Sevenants</a> à l'aide de Claude.ai</p>
   </div>
   <div class="progress-wrap">
     <div class="progress-labels" id="progress-labels">
@@ -706,25 +707,26 @@
         <div class="dist-box dist-box-a">
           <span class="tag">Pas l'objet de cet outil</span>
           <h3>La situation problématique (ou interpellante)</h3>
-          <p>C'est une situation <strong>vécue par l'étudiant CAP en stage</strong>, qui le met face à un problème professionnel réel. Elle constitue le point de départ de votre épreuve intégrée (travail de fin d'études).</p>
+          <p>C'est une situation <strong>vécue par l'étudiant du CAP en stage</strong>, qui le met face à un problème professionnel réel. Elle constitue le point de départ de votre épreuve intégrée (travail de fin d'études).</p>
           <p style="margin-bottom:0"><em>Exemple : « Lors de mon stage en 4ème secondaire, j'ai constaté que les élèves ne comprenaient pas la notion de photosynthèse malgré un cours magistral... »</em></p>
         </div>
         <div class="dist-box dist-box-b">
           <span class="tag">Ce que cet outil vous aide à construire</span>
           <h3>La situation-problème</h3>
           <p>C'est une situation <strong>construite par l'enseignant</strong> et proposée à ses élèves comme point de départ d'une leçon. Elle les amène à mobiliser des compétences pour résoudre un problème ouvert.</p>
-          <p style="margin-bottom:0"><em>Exemple : « Vous êtes responsable d'un restaurant. Un client allergique au gluten vous demande s'il peut manger votre plat signature. Comment le savez-vous ? »</em></p>
+          <p style="margin-bottom:0"><em>Exemple : « Vous êtes responsable d'un restaurant. Un client allergique au gluten vous demande s'il peut manger votre plat signature. Comment devez-vous réagir ? »</em></p>
         </div>
       </div>
 
       <hr class="sep">
       <div class="card-title">Fondements théoriques</div>
 
-      <p>La situation-problème s'inscrit dans l'<strong>approche par compétences</strong> (APC), développée notamment par Philippe Perrenoud et Philippe Meirieu. En Belgique francophone, cette approche est inscrite dans le <em>Décret du 3 mai 2019 portant le Code de l'enseignement fondamental et de l'enseignement secondaire</em>.</p>
+      <p>La situation-problème s'inscrit dans l'<strong>approche par compétences</strong> (APC), développée notamment par Philippe Perrenoud et Philippe Meirieu. En Belgique francophone, cette approche est inscrite dans le <em>Décret du 3 mai 2019 portant sur le Code de l'enseignement fondamental et de l'enseignement secondaire</em>.</p>
 
       <div class="callout callout-bleu">
-        <div class="callout-title">Définition de la compétence (Code de l'enseignement, Belgique)</div>
+        <div class="callout-title">Définition de la compétence (Fédération Wallonie-Bruxelles)</div>
         <p>« Aptitude à mettre en œuvre un ensemble organisé de <strong>savoirs</strong>, de <strong>savoir-faire</strong> et d'<strong>attitudes</strong> permettant d'accomplir un certain nombre de tâches. »</p>
+        <p style="font-size:0.82rem;margin-top:0.5rem;opacity:0.8;"><em>Art. 1.3.1-1, 10°, Décret du 3 mai 2019 portant sur le Code de l'enseignement fondamental et de l'enseignement secondaire, Moniteur Belge du 19 septembre 2019.</em></p>
       </div>
 
       <div class="card-subtitle">Les caractéristiques d'une bonne situation-problème</div>
@@ -810,7 +812,7 @@
       </div>
 
       <div class="form-group">
-        <label for="f-groupe">Description du groupe d'élèves <span class="optional">(facultatif)</span></label>
+        <label for="f-groupe">Description du groupe d'élèves — public cible <span class="required">*</span></label>
         <textarea id="f-groupe" rows="3" placeholder="Ex : Classe de 22 élèves, profil hétérogène, plusieurs allophones, faible motivation pour la matière. Certains ont des difficultés de lecture..."></textarea>
         <div class="field-hint">Ces informations aident à calibrer le niveau de complexité de la situation-problème.</div>
       </div>
@@ -835,8 +837,8 @@
       </div>
 
       <div class="form-group">
-        <label for="f-objectif">Décrivez la compétence ou le savoir visé</label>
-        <textarea id="f-objectif" rows="4" placeholder="Ex : Comprendre la notion de sélection naturelle et l'appliquer à des exemples concrets de l'évolution des espèces.&#10;Ex : Être capable de lire et d'interpréter un graphique statistique pour en tirer des conclusions argumentées.&#10;Ex : Maîtriser les accords du participe passé avec l'auxiliaire avoir."></textarea>
+        <label for="f-objectif">Décrivez l'objectif opérationnel principal sous la forme <em>« À la fin de la leçon, les apprenants seront capables de… »</em></label>
+        <textarea id="f-objectif" rows="4" placeholder="Ex : À la fin de la leçon, les apprenants seront capables de comprendre la notion de sélection naturelle et de l'appliquer à des exemples concrets.&#10;Ex : À la fin de la leçon, les apprenants seront capables de lire et d'interpréter un graphique statistique pour en tirer des conclusions argumentées.&#10;Ex : À la fin de la leçon, les apprenants seront capables de maîtriser les accords du participe passé avec l'auxiliaire avoir."></textarea>
         <div id="objectif-count" class="char-count">0 caractères</div>
       </div>
 
@@ -1259,8 +1261,9 @@ function validateAndGo(fromStep, toStep) {
     const matiere = document.getElementById('f-matiere').value.trim();
     const niveau  = document.getElementById('f-niveau').value;
     const theme   = document.getElementById('f-theme').value.trim();
-    if (!matiere || !niveau || !theme) {
-      alert('Merci de remplir au minimum la matière, le niveau de classe et le thème de la leçon.');
+    const groupe  = document.getElementById('f-groupe').value.trim();
+    if (!matiere || !niveau || !theme || !groupe) {
+      alert('Merci de remplir la matière, le niveau de classe, le thème de la leçon et la description du groupe d\'élèves.');
       return;
     }
   }
