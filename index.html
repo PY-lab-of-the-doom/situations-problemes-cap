@@ -1,0 +1,1841 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Construire une situation-problème — CAP Belgique francophone</title>
+<style>
+  /* ===== RESET & BASE ===== */
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bleu:    #1a3a5c;
+    --bleu-cl: #2a5080;
+    --bleu-tr: #e8f0f8;
+    --bord:    #8b1a1a;
+    --bord-cl: #b52020;
+    --bord-tr: #f9eaea;
+    --warn:    #e07b00;
+    --warn-tr: #fff4e0;
+    --vert:    #1a6b3a;
+    --vert-tr: #e6f5ec;
+    --gris:    #6b7280;
+    --gris-cl: #f4f6f9;
+    --gris-bd: #d1d5db;
+    --blanc:   #ffffff;
+    --texte:   #1f2937;
+    --radius:  8px;
+    --ombre:   0 2px 12px rgba(0,0,0,.10);
+    --ombre-f: 0 4px 24px rgba(0,0,0,.16);
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'Segoe UI', 'Helvetica Neue', Arial, sans-serif;
+    font-size: 16px;
+    line-height: 1.6;
+    color: var(--texte);
+    background: var(--gris-cl);
+    min-height: 100vh;
+  }
+
+  /* ===== HEADER ===== */
+  header {
+    background: var(--bleu);
+    color: var(--blanc);
+    padding: 0;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    box-shadow: var(--ombre-f);
+  }
+
+  .header-inner {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 14px 24px 10px;
+  }
+
+  .header-inner h1 {
+    font-size: 1.15rem;
+    font-weight: 700;
+    letter-spacing: .3px;
+    margin-bottom: 2px;
+  }
+
+  .header-inner p {
+    font-size: .8rem;
+    opacity: .75;
+    font-style: italic;
+  }
+
+  /* ===== PROGRESS BAR ===== */
+  .progress-wrap {
+    background: rgba(255,255,255,.15);
+    padding: 8px 24px;
+    max-width: 900px;
+    margin: 0 auto;
+  }
+
+  .progress-labels {
+    display: flex;
+    justify-content: space-between;
+    font-size: .68rem;
+    color: rgba(255,255,255,.65);
+    margin-bottom: 4px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: .5px;
+  }
+
+  .progress-bar-outer {
+    background: rgba(255,255,255,.2);
+    border-radius: 99px;
+    height: 6px;
+    overflow: hidden;
+  }
+
+  .progress-bar-inner {
+    background: linear-gradient(90deg, #e8b84b, var(--bord-cl));
+    height: 100%;
+    border-radius: 99px;
+    transition: width .4s ease;
+  }
+
+  .step-indicator {
+    font-size: .72rem;
+    color: rgba(255,255,255,.7);
+    margin-top: 4px;
+    text-align: right;
+  }
+
+  /* ===== MAIN LAYOUT ===== */
+  main {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 28px 16px 80px;
+  }
+
+  /* ===== CARD ===== */
+  .card {
+    background: var(--blanc);
+    border-radius: var(--radius);
+    box-shadow: var(--ombre);
+    padding: 32px 36px;
+    margin-bottom: 20px;
+  }
+
+  @media (max-width: 600px) {
+    .card { padding: 20px 16px; }
+  }
+
+  .card-title {
+    font-size: 1.4rem;
+    font-weight: 700;
+    color: var(--bleu);
+    border-left: 4px solid var(--bord);
+    padding-left: 12px;
+    margin-bottom: 20px;
+    line-height: 1.3;
+  }
+
+  .card-subtitle {
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--bleu-cl);
+    margin-bottom: 10px;
+    margin-top: 22px;
+  }
+
+  p { margin-bottom: 12px; }
+  ul, ol { margin: 8px 0 14px 22px; }
+  li { margin-bottom: 6px; }
+
+  /* ===== STEP PANELS ===== */
+  .step-panel { display: none; }
+  .step-panel.active { display: block; }
+
+  /* ===== CALLOUT BOXES ===== */
+  .callout {
+    border-radius: var(--radius);
+    padding: 14px 18px;
+    margin: 16px 0;
+    border-left: 4px solid;
+  }
+
+  .callout-bleu   { background: var(--bleu-tr);  border-color: var(--bleu);   }
+  .callout-bord   { background: var(--bord-tr);  border-color: var(--bord);   }
+  .callout-warn   { background: var(--warn-tr);  border-color: var(--warn);   }
+  .callout-vert   { background: var(--vert-tr);  border-color: var(--vert);   }
+
+  .callout-title {
+    font-weight: 700;
+    font-size: .88rem;
+    text-transform: uppercase;
+    letter-spacing: .5px;
+    margin-bottom: 6px;
+  }
+
+  .callout-bleu .callout-title { color: var(--bleu); }
+  .callout-bord .callout-title { color: var(--bord); }
+  .callout-warn .callout-title { color: var(--warn); }
+  .callout-vert .callout-title { color: var(--vert); }
+
+  .callout p { margin-bottom: 6px; }
+  .callout p:last-child { margin-bottom: 0; }
+
+  /* ===== DISTINCTION BOX (step 1) ===== */
+  .distinction-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin: 20px 0;
+  }
+
+  @media (max-width: 600px) {
+    .distinction-grid { grid-template-columns: 1fr; }
+  }
+
+  .dist-box {
+    border-radius: var(--radius);
+    padding: 18px 16px;
+    border: 2px solid;
+  }
+
+  .dist-box-a {
+    border-color: var(--gris-bd);
+    background: #f9fafb;
+  }
+
+  .dist-box-b {
+    border-color: var(--bleu);
+    background: var(--bleu-tr);
+  }
+
+  .dist-box .tag {
+    display: inline-block;
+    font-size: .72rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: .8px;
+    padding: 2px 10px;
+    border-radius: 99px;
+    margin-bottom: 10px;
+  }
+
+  .dist-box-a .tag { background: var(--gris-bd); color: var(--gris); }
+  .dist-box-b .tag { background: var(--bleu); color: white; }
+
+  .dist-box h3 { font-size: 1rem; margin-bottom: 8px; }
+
+  /* ===== CRITERIA LIST ===== */
+  .criteria-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  .criteria-list li {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 8px 0;
+    border-bottom: 1px solid var(--gris-bd);
+    font-size: .93rem;
+  }
+
+  .criteria-list li:last-child { border-bottom: none; }
+
+  .criteria-list .icon {
+    font-size: 1rem;
+    flex-shrink: 0;
+    margin-top: 2px;
+  }
+
+  /* ===== DEFAUTS GRID ===== */
+  .defauts-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    margin: 14px 0;
+  }
+
+  @media (max-width: 640px) {
+    .defauts-grid { grid-template-columns: 1fr; }
+  }
+
+  .defaut-item {
+    background: var(--warn-tr);
+    border: 1px solid #f0c070;
+    border-radius: 6px;
+    padding: 10px 12px;
+    font-size: .87rem;
+  }
+
+  .defaut-item strong { color: var(--warn); display: block; margin-bottom: 3px; }
+
+  /* ===== FORM ELEMENTS ===== */
+  .form-group { margin-bottom: 22px; }
+
+  label {
+    display: block;
+    font-weight: 600;
+    font-size: .9rem;
+    margin-bottom: 6px;
+    color: var(--bleu);
+  }
+
+  label .optional {
+    font-weight: 400;
+    font-style: italic;
+    color: var(--gris);
+    font-size: .82rem;
+  }
+
+  input[type="text"],
+  input[type="number"],
+  select,
+  textarea {
+    width: 100%;
+    padding: 10px 14px;
+    border: 1.5px solid var(--gris-bd);
+    border-radius: 6px;
+    font-size: .93rem;
+    font-family: inherit;
+    color: var(--texte);
+    background: var(--blanc);
+    transition: border-color .2s, box-shadow .2s;
+    resize: vertical;
+  }
+
+  input[type="text"]:focus,
+  input[type="number"]:focus,
+  select:focus,
+  textarea:focus {
+    outline: none;
+    border-color: var(--bleu-cl);
+    box-shadow: 0 0 0 3px rgba(42,80,128,.12);
+  }
+
+  input[type="password"] {
+    width: 100%;
+    padding: 10px 14px;
+    border: 1.5px solid var(--gris-bd);
+    border-radius: 6px;
+    font-size: .93rem;
+    font-family: monospace;
+    color: var(--texte);
+    background: var(--blanc);
+    transition: border-color .2s, box-shadow .2s;
+  }
+
+  input[type="password"]:focus {
+    outline: none;
+    border-color: var(--bleu-cl);
+    box-shadow: 0 0 0 3px rgba(42,80,128,.12);
+  }
+
+  textarea { min-height: 100px; }
+
+  .field-hint {
+    font-size: .8rem;
+    color: var(--gris);
+    margin-top: 5px;
+    font-style: italic;
+  }
+
+  /* ===== INLINE ALERT ===== */
+  .field-alert {
+    display: none;
+    margin-top: 6px;
+    padding: 8px 12px;
+    background: var(--warn-tr);
+    border: 1px solid #f0c070;
+    border-radius: 6px;
+    font-size: .84rem;
+    color: #7a4700;
+  }
+
+  .field-alert.visible { display: flex; align-items: flex-start; gap: 8px; }
+  .field-alert .alert-icon { flex-shrink: 0; font-size: 1rem; }
+
+  /* ===== APPROACH CARDS ===== */
+  .approach-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+    margin: 16px 0;
+  }
+
+  @media (max-width: 640px) {
+    .approach-grid { grid-template-columns: 1fr; }
+  }
+
+  .approach-card {
+    border: 2px solid var(--gris-bd);
+    border-radius: var(--radius);
+    padding: 16px;
+    cursor: pointer;
+    transition: border-color .2s, background .2s, box-shadow .2s;
+    position: relative;
+  }
+
+  .approach-card:hover {
+    border-color: var(--bleu-cl);
+    background: var(--bleu-tr);
+  }
+
+  .approach-card.selected {
+    border-color: var(--bleu);
+    background: var(--bleu-tr);
+    box-shadow: 0 0 0 3px rgba(26,58,92,.12);
+  }
+
+  .approach-card input[type="radio"] {
+    position: absolute;
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  .approach-card .approach-icon { font-size: 1.6rem; margin-bottom: 8px; display: block; }
+  .approach-card .approach-name { font-weight: 700; font-size: .95rem; color: var(--bleu); margin-bottom: 6px; }
+  .approach-card .approach-ref  { font-size: .78rem; color: var(--gris); font-style: italic; margin-bottom: 8px; }
+  .approach-card .approach-desc { font-size: .85rem; color: var(--texte); margin-bottom: 8px; }
+  .approach-card .approach-ex {
+    font-size: .82rem;
+    background: rgba(255,255,255,.7);
+    border-left: 3px solid var(--bleu-cl);
+    padding: 6px 10px;
+    border-radius: 0 4px 4px 0;
+    color: #374151;
+    font-style: italic;
+  }
+
+  /* ===== BUTTONS ===== */
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 11px 24px;
+    border-radius: 6px;
+    font-size: .95rem;
+    font-weight: 600;
+    cursor: pointer;
+    border: none;
+    transition: background .2s, box-shadow .2s, transform .1s;
+    text-decoration: none;
+    font-family: inherit;
+  }
+
+  .btn:active { transform: translateY(1px); }
+
+  .btn-primary {
+    background: var(--bleu);
+    color: white;
+  }
+  .btn-primary:hover { background: var(--bleu-cl); box-shadow: 0 2px 8px rgba(26,58,92,.3); }
+
+  .btn-bord {
+    background: var(--bord);
+    color: white;
+  }
+  .btn-bord:hover { background: var(--bord-cl); box-shadow: 0 2px 8px rgba(139,26,26,.3); }
+
+  .btn-outline {
+    background: transparent;
+    color: var(--bleu);
+    border: 2px solid var(--bleu);
+  }
+  .btn-outline:hover { background: var(--bleu-tr); }
+
+  .btn-ghost {
+    background: transparent;
+    color: var(--gris);
+    border: 2px solid var(--gris-bd);
+  }
+  .btn-ghost:hover { background: var(--gris-cl); color: var(--texte); }
+
+  .btn-vert {
+    background: var(--vert);
+    color: white;
+  }
+  .btn-vert:hover { background: #145c30; }
+
+  .btn:disabled {
+    opacity: .5;
+    cursor: not-allowed;
+    transform: none;
+  }
+
+  .btn-lg { padding: 14px 32px; font-size: 1.05rem; }
+  .btn-sm { padding: 7px 14px; font-size: .84rem; }
+
+  /* ===== NAV BUTTONS ===== */
+  .nav-buttons {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 28px;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+
+  .nav-buttons .spacer { flex: 1; }
+
+  /* ===== API KEY SECTION ===== */
+  .api-section {
+    background: var(--gris-cl);
+    border: 1.5px solid var(--gris-bd);
+    border-radius: var(--radius);
+    padding: 18px 20px;
+    margin-bottom: 20px;
+  }
+
+  .api-section .api-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 12px;
+  }
+
+  .api-section .api-header h3 {
+    font-size: .95rem;
+    font-weight: 700;
+    color: var(--bleu);
+  }
+
+  .api-row {
+    display: flex;
+    gap: 10px;
+    align-items: flex-start;
+  }
+
+  .api-row input { flex: 1; }
+
+  /* ===== LOADING STATE ===== */
+  .loading-state {
+    display: none;
+    text-align: center;
+    padding: 28px;
+  }
+
+  .loading-state.visible { display: block; }
+
+  .spinner {
+    display: inline-block;
+    width: 40px;
+    height: 40px;
+    border: 4px solid var(--gris-bd);
+    border-top-color: var(--bleu);
+    border-radius: 50%;
+    animation: spin .8s linear infinite;
+    margin-bottom: 14px;
+  }
+
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  /* ===== AI RESULT ===== */
+  .ai-result {
+    display: none;
+  }
+
+  .ai-result.visible { display: block; }
+
+  /* ===== GRILLE CRITERES ===== */
+  .grille-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: .88rem;
+    margin: 12px 0;
+  }
+
+  .grille-table th {
+    background: var(--bleu);
+    color: white;
+    padding: 10px 12px;
+    text-align: left;
+    font-weight: 600;
+  }
+
+  .grille-table td {
+    padding: 9px 12px;
+    border-bottom: 1px solid var(--gris-bd);
+    vertical-align: top;
+  }
+
+  .grille-table tr:nth-child(even) td { background: var(--gris-cl); }
+
+  .niveau-badge {
+    display: inline-block;
+    padding: 2px 10px;
+    border-radius: 99px;
+    font-size: .78rem;
+    font-weight: 700;
+    white-space: nowrap;
+  }
+
+  .niveau-insuf { background: #fee2e2; color: #991b1b; }
+  .niveau-dev   { background: #fef3c7; color: #92400e; }
+  .niveau-mait  { background: #d1fae5; color: #065f46; }
+  .niveau-exp   { background: #dbeafe; color: #1e40af; }
+
+  /* ===== SYNTHESE ===== */
+  .synthese-section { margin-bottom: 20px; }
+  .synthese-section h3 {
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--bleu);
+    border-bottom: 2px solid var(--bleu-tr);
+    padding-bottom: 6px;
+    margin-bottom: 12px;
+  }
+
+  .synthese-row {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 8px;
+    font-size: .9rem;
+  }
+
+  .synthese-row .s-label {
+    font-weight: 600;
+    color: var(--gris);
+    min-width: 170px;
+    flex-shrink: 0;
+  }
+
+  .synthese-row .s-val { color: var(--texte); }
+
+  .synthese-text {
+    background: var(--gris-cl);
+    border-radius: 6px;
+    padding: 12px 14px;
+    font-size: .9rem;
+    border-left: 3px solid var(--bleu-cl);
+    margin-bottom: 8px;
+    white-space: pre-wrap;
+  }
+
+  /* ===== PRINT STYLES ===== */
+  @media print {
+    header, .nav-buttons, .api-section, #btn-analyze, .btn { display: none !important; }
+    body { background: white; font-size: 12pt; }
+    .card { box-shadow: none; border: 1px solid #ddd; margin-bottom: 14pt; }
+    .step-panel { display: block !important; }
+    main { padding: 0; max-width: 100%; }
+    .grille-table th { background: #1a3a5c !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  }
+
+  /* ===== MISC ===== */
+  .sep {
+    border: none;
+    border-top: 1.5px solid var(--gris-bd);
+    margin: 22px 0;
+  }
+
+  .text-small { font-size: .85rem; color: var(--gris); }
+
+  .badge-discipline {
+    display: inline-block;
+    padding: 3px 10px;
+    background: var(--bleu-tr);
+    color: var(--bleu);
+    border-radius: 99px;
+    font-size: .78rem;
+    font-weight: 600;
+    margin: 3px 2px;
+  }
+
+  .highlight-box {
+    background: linear-gradient(135deg, var(--bleu) 0%, var(--bleu-cl) 100%);
+    color: white;
+    border-radius: var(--radius);
+    padding: 22px 28px;
+    margin: 20px 0;
+    text-align: center;
+  }
+
+  .highlight-box h2 { font-size: 1.3rem; margin-bottom: 8px; }
+  .highlight-box p  { opacity: .88; margin-bottom: 0; }
+
+  /* character counters */
+  .char-count {
+    font-size: .76rem;
+    color: var(--gris);
+    text-align: right;
+    margin-top: 3px;
+  }
+
+  .char-count.warn { color: var(--warn); font-weight: 600; }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="header-inner">
+    <h1>Construire une situation-problème — Guide pas à pas</h1>
+    <p>Certificat d'Aptitudes Pédagogiques · Enseignement secondaire · Belgique francophone</p>
+  </div>
+  <div class="progress-wrap">
+    <div class="progress-labels" id="progress-labels">
+      <span>Accueil</span><span>Contexte</span><span>Objectif</span><span>Approche</span><span>Construction</span><span>Analyse IA</span><span>Export</span>
+    </div>
+    <div class="progress-bar-outer">
+      <div class="progress-bar-inner" id="progress-bar" style="width:14.28%"></div>
+    </div>
+    <div class="step-indicator" id="step-indicator">Étape 1 sur 7</div>
+  </div>
+</header>
+
+<main>
+
+  <!-- ============================
+       ÉTAPE 1 — ACCUEIL
+       ============================ -->
+  <div class="step-panel active" id="step-1">
+    <div class="card">
+      <div class="highlight-box">
+        <h2>Bienvenue dans le guide de construction d'une situation-problème</h2>
+        <p>Cet outil vous accompagne, étape par étape, pour concevoir une situation-problème de qualité destinée à vos élèves.</p>
+      </div>
+
+      <div class="card-title">Distinction fondamentale à connaître avant de commencer</div>
+
+      <div class="distinction-grid">
+        <div class="dist-box dist-box-a">
+          <span class="tag">Pas l'objet de cet outil</span>
+          <h3>La situation problématique (ou interpellante)</h3>
+          <p>C'est une situation <strong>vécue par l'étudiant CAP en stage</strong>, qui le met face à un problème professionnel réel. Elle constitue le point de départ de votre épreuve intégrée (travail de fin d'études).</p>
+          <p style="margin-bottom:0"><em>Exemple : « Lors de mon stage en 4ème secondaire, j'ai constaté que les élèves ne comprenaient pas la notion de photosynthèse malgré un cours magistral... »</em></p>
+        </div>
+        <div class="dist-box dist-box-b">
+          <span class="tag">Ce que cet outil vous aide à construire</span>
+          <h3>La situation-problème</h3>
+          <p>C'est une situation <strong>construite par l'enseignant</strong> et proposée à ses élèves comme point de départ d'une leçon. Elle les amène à mobiliser des compétences pour résoudre un problème ouvert.</p>
+          <p style="margin-bottom:0"><em>Exemple : « Vous êtes responsable d'un restaurant. Un client allergique au gluten vous demande s'il peut manger votre plat signature. Comment le savez-vous ? »</em></p>
+        </div>
+      </div>
+
+      <hr class="sep">
+      <div class="card-title">Fondements théoriques</div>
+
+      <p>La situation-problème s'inscrit dans l'<strong>approche par compétences</strong> (APC), développée notamment par Philippe Perrenoud et Philippe Meirieu. En Belgique francophone, cette approche est inscrite dans le <em>Décret du 3 mai 2019 portant le Code de l'enseignement fondamental et de l'enseignement secondaire</em>.</p>
+
+      <div class="callout callout-bleu">
+        <div class="callout-title">Définition de la compétence (Code de l'enseignement, Belgique)</div>
+        <p>« Aptitude à mettre en œuvre un ensemble organisé de <strong>savoirs</strong>, de <strong>savoir-faire</strong> et d'<strong>attitudes</strong> permettant d'accomplir un certain nombre de tâches. »</p>
+      </div>
+
+      <div class="card-subtitle">Les caractéristiques d'une bonne situation-problème</div>
+      <ul class="criteria-list">
+        <li><span class="icon">✅</span><span>Place l'apprenant devant des <strong>décisions à prendre</strong>, pas devant des cases à remplir</span></li>
+        <li><span class="icon">✅</span><span>Est ancrée dans une <strong>situation pragmatique réaliste</strong> (vie sociale, professionnelle ou citoyenne)</span></li>
+        <li><span class="icon">✅</span><span>N'est <strong>pas un exercice de restitution</strong> — les savoirs sont des ressources, pas le centre de l'apprentissage</span></li>
+        <li><span class="icon">✅</span><span>Mobilise <strong>plusieurs ressources cognitives</strong> simultanément</span></li>
+        <li><span class="icon">✅</span><span>Donne droit aux <strong>essais et aux erreurs</strong> — le processus compte autant que la réponse</span></li>
+        <li><span class="icon">✅</span><span>Induit <strong>engagement, coopération et responsabilité</strong> chez les élèves</span></li>
+        <li><span class="icon">✅</span><span>Demande un <strong>investissement dans la durée</strong>, pas une réponse immédiate</span></li>
+      </ul>
+
+      <hr class="sep">
+      <div class="card-title">Les défauts fréquents à éviter</div>
+      <p>L'outil vous alertera tout au long du processus si votre situation risque de tomber dans ces pièges classiques :</p>
+
+      <div class="defauts-grid">
+        <div class="defaut-item"><strong>⚠ Situation trop fermée</strong>Une seule réponse possible, aucun problème réel à résoudre. Ex : « Quelle est la définition de X ? »</div>
+        <div class="defaut-item"><strong>⚠ Réponse dans le support</strong>La question trouve sa réponse directement dans le document fourni aux élèves.</div>
+        <div class="defaut-item"><strong>⚠ Situation décontextualisée</strong>Aucun ancrage dans une réalité vraisemblable. Les élèves ne se sentent pas concernés.</div>
+        <div class="defaut-item"><strong>⚠ Exercice déguisé</strong>Simple exercice de compréhension ou de mémorisation présenté comme une situation-problème.</div>
+        <div class="defaut-item"><strong>⚠ Rédigée par les élèves</strong>C'est le professeur qui rédige la situation-problème, pas les élèves.</div>
+        <div class="defaut-item"><strong>⚠ Déconstruction prématurée</strong>Brainstorming suivi immédiatement d'une correction sans temps de recherche réel.</div>
+        <div class="defaut-item"><strong>⚠ Questions multiples</strong>Une liste de sous-questions compartimentées guide trop la résolution et supprime l'aspect problème.</div>
+        <div class="defaut-item"><strong>⚠ Hors démarche disciplinaire</strong>La situation ne relève pas de la logique de la discipline visée.</div>
+      </div>
+
+      <div class="nav-buttons">
+        <div class="spacer"></div>
+        <button class="btn btn-primary btn-lg" onclick="goTo(2)">Commencer → Étape 2 : Votre contexte</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================
+       ÉTAPE 2 — CONTEXTE
+       ============================ -->
+  <div class="step-panel" id="step-2">
+    <div class="card">
+      <div class="card-title">Étape 2 — Votre contexte d'enseignement</div>
+      <p>Ces informations permettront à l'outil (et à l'analyse IA) de contextualiser les retours. Soyez précis.</p>
+
+      <div class="form-group">
+        <label for="f-matiere">Matière enseignée <span class="optional">— soyez précis (ex : « Biologie », « Histoire-Géo », « Français langue de l'enseignement »)</span></label>
+        <input type="text" id="f-matiere" placeholder="Ex : Sciences économiques, Mathématiques, Français, Éducation physique...">
+      </div>
+
+      <div class="form-group">
+        <label for="f-niveau">Niveau de classe</label>
+        <select id="f-niveau">
+          <option value="">— Sélectionnez —</option>
+          <optgroup label="Enseignement secondaire ordinaire">
+            <option>1ère année commune (1C)</option>
+            <option>2ème année commune (2C)</option>
+            <option>3ème secondaire (3S)</option>
+            <option>4ème secondaire (4S)</option>
+            <option>5ème secondaire (5S)</option>
+            <option>6ème secondaire (6S)</option>
+            <option>7ème secondaire (7S)</option>
+          </optgroup>
+          <optgroup label="Filière de qualification">
+            <option>3ème Technique de Qualification (3TQ)</option>
+            <option>4ème Technique de Qualification (4TQ)</option>
+            <option>5ème Technique de Qualification (5TQ)</option>
+            <option>6ème Technique de Qualification (6TQ)</option>
+            <option>3ème Professionnelle (3P)</option>
+            <option>4ème Professionnelle (4P)</option>
+            <option>5ème Professionnelle (5P)</option>
+            <option>6ème Professionnelle (6P)</option>
+          </optgroup>
+          <optgroup label="Autre">
+            <option>Enseignement en alternance (CEFA)</option>
+            <option>Autre niveau (préciser dans le groupe d'élèves)</option>
+          </optgroup>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label for="f-theme">Thème de la leçon</label>
+        <input type="text" id="f-theme" placeholder="Ex : La photosynthèse, La Première Guerre mondiale, Les fractions, La rédaction d'une lettre de motivation...">
+        <div class="field-hint">Il s'agit du thème du contenu, pas encore de l'objectif pédagogique (cela viendra à l'étape suivante).</div>
+      </div>
+
+      <div class="form-group">
+        <label for="f-groupe">Description du groupe d'élèves <span class="optional">(facultatif)</span></label>
+        <textarea id="f-groupe" rows="3" placeholder="Ex : Classe de 22 élèves, profil hétérogène, plusieurs allophones, faible motivation pour la matière. Certains ont des difficultés de lecture..."></textarea>
+        <div class="field-hint">Ces informations aident à calibrer le niveau de complexité de la situation-problème.</div>
+      </div>
+
+      <div class="nav-buttons">
+        <button class="btn btn-ghost" onclick="goTo(1)">← Retour</button>
+        <button class="btn btn-primary" onclick="validateAndGo(2,3)">Suivant → Étape 3 : Objectif</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================
+       ÉTAPE 3 — OBJECTIF
+       ============================ -->
+  <div class="step-panel" id="step-3">
+    <div class="card">
+      <div class="card-title">Étape 3 — Objectif d'apprentissage</div>
+
+      <div class="callout callout-bleu">
+        <div class="callout-title">Principe fondamental</div>
+        <p>La situation-problème doit être <strong>orientée vers l'objectif sans le dévoiler explicitement</strong>. L'élève découvre l'objet d'apprentissage <em>en cherchant</em>, pas en lisant la question. L'objectif est votre boussole de conception, pas le titre de votre situation.</p>
+      </div>
+
+      <div class="form-group">
+        <label for="f-objectif">Décrivez la compétence ou le savoir visé</label>
+        <textarea id="f-objectif" rows="4" placeholder="Ex : Comprendre la notion de sélection naturelle et l'appliquer à des exemples concrets de l'évolution des espèces.&#10;Ex : Être capable de lire et d'interpréter un graphique statistique pour en tirer des conclusions argumentées.&#10;Ex : Maîtriser les accords du participe passé avec l'auxiliaire avoir."></textarea>
+        <div id="objectif-count" class="char-count">0 caractères</div>
+      </div>
+
+      <hr class="sep">
+      <div class="card-subtitle">Exemples par discipline — pour vous inspirer</div>
+      <p class="text-small">Cliquez sur une discipline pour voir un exemple d'objectif et une esquisse de situation-problème adaptée.</p>
+
+      <div style="margin:12px 0 6px">
+        <span class="badge-discipline" style="cursor:pointer" onclick="showDisciplineEx('bio')">🔬 Biologie</span>
+        <span class="badge-discipline" style="cursor:pointer" onclick="showDisciplineEx('hist')">📜 Histoire</span>
+        <span class="badge-discipline" style="cursor:pointer" onclick="showDisciplineEx('maths')">📐 Mathématiques</span>
+        <span class="badge-discipline" style="cursor:pointer" onclick="showDisciplineEx('fle')">✍️ Français</span>
+        <span class="badge-discipline" style="cursor:pointer" onclick="showDisciplineEx('eco')">📊 Économie</span>
+        <span class="badge-discipline" style="cursor:pointer" onclick="showDisciplineEx('ep')">🏃 Éd. physique</span>
+      </div>
+
+      <div id="discipline-example" style="display:none" class="callout callout-vert">
+        <div class="callout-title" id="disc-ex-title"></div>
+        <p><strong>Objectif :</strong> <span id="disc-ex-obj"></span></p>
+        <p><strong>Esquisse de situation-problème :</strong> <span id="disc-ex-sp"></span></p>
+      </div>
+
+      <div class="callout callout-warn" style="margin-top:16px">
+        <div class="callout-title">⚠ Vigilance — L'objectif ne doit pas être lu par l'élève</div>
+        <p>Ne commencez jamais votre situation-problème par une phrase du type : « L'objectif de cette leçon est de comprendre X. » L'élève doit construire sa compréhension de X <em>en résolvant</em> la situation.</p>
+      </div>
+
+      <div class="nav-buttons">
+        <button class="btn btn-ghost" onclick="goTo(2)">← Retour</button>
+        <button class="btn btn-primary" onclick="validateAndGo(3,4)">Suivant → Étape 4 : Approche</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================
+       ÉTAPE 4 — APPROCHE
+       ============================ -->
+  <div class="step-panel" id="step-4">
+    <div class="card">
+      <div class="card-title">Étape 4 — Choisissez votre approche didactique</div>
+      <p>Chaque approche repose sur un ancrage théorique différent et produit un type de situation-problème distinct. Choisissez celle qui correspond le mieux à votre objectif et à votre groupe d'élèves.</p>
+
+      <div class="approach-grid" id="approach-grid">
+
+        <div class="approach-card" onclick="selectApproach(this,'conflit')">
+          <input type="radio" name="approche" value="conflit">
+          <span class="approach-icon">⚡</span>
+          <div class="approach-name">Conflit cognitif</div>
+          <div class="approach-ref">Piaget · Doise & Mugny</div>
+          <div class="approach-desc">Confronter une représentation initiale de l'élève à une réalité qui la contredit. Le déséquilibre créé oblige à reconstruire ses schèmes de pensée.</div>
+          <div class="approach-ex">« Vous pensez que les objets lourds tombent plus vite. Voici deux balles de masses différentes. Que va-t-il se passer selon vous ? Testez. »</div>
+        </div>
+
+        <div class="approach-card" onclick="selectApproach(this,'obstacle')">
+          <input type="radio" name="approche" value="obstacle">
+          <span class="approach-icon">🧱</span>
+          <div class="approach-name">Obstacle à franchir</div>
+          <div class="approach-ref">Meirieu · Bachelard</div>
+          <div class="approach-desc">L'élève se trouve face à un obstacle intellectuel identifié qu'il ne peut surmonter avec ses ressources actuelles. Il doit construire un nouvel outil cognitif.</div>
+          <div class="approach-ex">« Vous devez calculer la surface de cette parcelle triangulaire pour commander les semences. Vous ne disposez que d'une règle. Comment faire ? »</div>
+        </div>
+
+        <div class="approach-card" onclick="selectApproach(this,'reel')">
+          <input type="radio" name="approche" value="reel">
+          <span class="approach-icon">🌍</span>
+          <div class="approach-name">Ancrage dans le réel</div>
+          <div class="approach-ref">Perrenoud · APC</div>
+          <div class="approach-desc">Situation pragmatique tirée de la vie sociale, professionnelle ou citoyenne. L'élève mobilise des ressources pour résoudre un problème authentique et vraisemblable.</div>
+          <div class="approach-ex">« Un ami vous demande si le produit qu'il a acheté en soldes avec 30% de réduction puis 20% supplémentaire est identique à une réduction de 50%. Que lui répondez-vous et comment le prouvez-vous ? »</div>
+        </div>
+
+        <div class="approach-card" onclick="selectApproach(this,'investigation')">
+          <input type="radio" name="approche" value="investigation">
+          <span class="approach-icon">🔍</span>
+          <div class="approach-name">Approche par investigation</div>
+          <div class="approach-ref">Dewey · Sciences inquiry-based</div>
+          <div class="approach-desc">L'élève formule des hypothèses, les teste et les confronte à des données. La démarche scientifique ou de recherche est au cœur de l'apprentissage.</div>
+          <div class="approach-ex">« Voici les données de mortalité de deux villes aux XIXe siècle. L'une a introduit la filtration de l'eau en 1854, l'autre non. Formulez une hypothèse et vérifiez-la avec les données. »</div>
+        </div>
+
+      </div>
+
+      <div id="approach-alert" class="field-alert" style="display:none">
+        <span class="alert-icon">⚠</span>
+        <span>Veuillez sélectionner une approche avant de continuer.</span>
+      </div>
+
+      <div id="approach-tip" style="display:none" class="callout callout-vert" id="approach-feedback">
+        <div class="callout-title" id="approach-tip-title"></div>
+        <p id="approach-tip-text"></p>
+      </div>
+
+      <div class="nav-buttons">
+        <button class="btn btn-ghost" onclick="goTo(3)">← Retour</button>
+        <button class="btn btn-primary" onclick="validateAndGo(4,5)">Suivant → Étape 5 : Construction</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================
+       ÉTAPE 5 — CONSTRUCTION
+       ============================ -->
+  <div class="step-panel" id="step-5">
+    <div class="card">
+      <div class="card-title">Étape 5 — Construction de la situation-problème</div>
+
+      <div class="callout callout-bleu">
+        <div class="callout-title">Méthode de construction</div>
+        <p>Remplissez chaque champ avec soin. Des alertes s'activeront en temps réel si votre formulation risque de tomber dans l'un des défauts classiques identifiés en didactique. La qualité de votre situation-problème dépend de la précision de chaque composante.</p>
+      </div>
+
+      <!-- 5.1 Contexte narratif -->
+      <div class="form-group">
+        <label for="f-contexte">1. Contexte narratif <span class="optional">— Qui ? Quoi ? Où ? Situation vraisemblable</span></label>
+        <textarea id="f-contexte" rows="5"
+          placeholder="Décrivez une situation concrète et vraisemblable dans laquelle se trouvent les personnages ou le rôle attribué à l'élève.&#10;&#10;Ex : « Vous êtes journaliste stagiaire pour le journal de votre commune. La rédactrice en chef vous demande de rédiger un article sur l'évolution de la population de votre ville entre 1990 et 2020. Elle vous remet trois graphiques issus du SPF Économie... »"></textarea>
+        <div id="contexte-count" class="char-count">0 caractères</div>
+        <div id="alert-contexte-absent" class="field-alert">
+          <span class="alert-icon">⚠</span>
+          <span><strong>Contexte absent ou trop vague :</strong> une bonne situation-problème ancre l'élève dans une situation vraisemblable avec des acteurs, un lieu et une raison d'agir. Évitez les formulations abstraites du type « Dans le cadre de la leçon... »</span>
+        </div>
+        <div id="alert-contexte-cours" class="field-alert">
+          <span class="alert-icon">⚠</span>
+          <span><strong>Référence explicite au cours détectée :</strong> la situation-problème ne doit pas faire référence au cours, à la leçon ou à l'apprentissage lui-même. Reformulez dans un contexte extérieur à la classe.</span>
+        </div>
+      </div>
+
+      <!-- 5.2 Supports -->
+      <div class="form-group">
+        <label for="f-supports">2. Documents ou supports proposés aux élèves <span class="optional">(facultatif si pas de support)</span></label>
+        <textarea id="f-supports" rows="3"
+          placeholder="Listez les documents, données ou ressources que vous remettrez aux élèves (sans les coller ici).&#10;Ex : « Graphique de l'évolution démographique (SPF Économie), extrait d'article de presse de 2018, tableau comparatif de 3 communes. »"></textarea>
+        <div id="alert-reponse-support" class="field-alert">
+          <span class="alert-icon">⚠</span>
+          <span><strong>Risque : réponse dans le support.</strong> Assurez-vous que les documents fournis <em>alimentent</em> la réflexion sans <em>contenir</em> la réponse à la question centrale. Si le support donne directement la réponse, ce n'est plus une situation-problème mais un exercice de lecture.</span>
+        </div>
+      </div>
+
+      <!-- 5.3 Contraintes -->
+      <div class="form-group">
+        <label for="f-contraintes">3. Contraintes imposées <span class="optional">(facultatif)</span></label>
+        <textarea id="f-contraintes" rows="3"
+          placeholder="Ex : « Vous disposez de 45 minutes. Vous ne pouvez pas utiliser Internet. Vous devez justifier votre réponse avec au moins deux arguments tirés des documents. »"></textarea>
+        <div class="field-hint">Les contraintes délimitent le cadre de la résolution et empêchent les stratégies d'évitement.</div>
+      </div>
+
+      <!-- 5.4 Question centrale -->
+      <div class="form-group">
+        <label for="f-question">4. Question centrale posée aux élèves</label>
+        <textarea id="f-question" rows="3"
+          placeholder="Formulez UNE SEULE question ouverte. Évitez les listes de sous-questions.&#10;Ex : « Comment expliquer l'évolution observée de la population de votre commune et quelles en sont les conséquences possibles pour les prochaines années ? »"></textarea>
+        <div id="question-count" class="char-count">0 caractères</div>
+        <div id="alert-multi-questions" class="field-alert">
+          <span class="alert-icon">⚠</span>
+          <span><strong>Plusieurs questions détectées :</strong> une situation-problème efficace ne pose <em>qu'une seule</em> question centrale, ouverte et complexe. Les sous-questions compartimentent la pensée et réduisent l'espace de résolution. Reformulez en une question intégratrice.</span>
+        </div>
+        <div id="alert-question-fermee" class="field-alert">
+          <span class="alert-icon">⚠</span>
+          <span><strong>Question potentiellement fermée :</strong> votre question semble appeler une réponse unique ou très limitée (oui/non, définition...). Une bonne question de situation-problème ouvre un espace de raisonnement. Reformulez pour élargir.</span>
+        </div>
+        <div id="alert-definition" class="field-alert">
+          <span class="alert-icon">⚠</span>
+          <span><strong>Demande de définition détectée :</strong> « Qu'est-ce que X ? » ou « Définissez X » est un exercice de restitution, pas une situation-problème. Ancrez votre question dans une action à accomplir ou une décision à prendre.</span>
+        </div>
+      </div>
+
+      <!-- 5.5 Productions attendues -->
+      <div class="form-group">
+        <label for="f-productions">5. Productions attendues des élèves</label>
+        <textarea id="f-productions" rows="3"
+          placeholder="Qu'est-ce que les élèves doivent remettre ou présenter à l'issue de la situation-problème ?&#10;Ex : « Un texte argumentatif de 15 à 20 lignes, une affiche, un tableau comparatif, une présentation orale de 3 minutes, un schéma annoté... »"></textarea>
+        <div class="field-hint">La production attendue doit être une trace de la démarche, pas uniquement de la réponse finale.</div>
+      </div>
+
+      <div class="callout callout-warn">
+        <div class="callout-title">⚠ Relecture critique — Avant de passer à l'analyse</div>
+        <ul style="margin:6px 0 0 18px">
+          <li>Puis-je répondre à ma question sans réfléchir (en cherchant juste dans le support) ?</li>
+          <li>Mon contexte serait-il vraisemblable aux yeux d'un élève de cet âge ?</li>
+          <li>Ma question est-elle vraiment ouverte, ou oriente-t-elle trop la réponse ?</li>
+          <li>Ai-je posé plusieurs questions ? Si oui, puis-je les fusionner en une seule ?</li>
+        </ul>
+      </div>
+
+      <div class="nav-buttons">
+        <button class="btn btn-ghost" onclick="goTo(4)">← Retour</button>
+        <button class="btn btn-primary" onclick="validateAndGo(5,6)">Suivant → Étape 6 : Analyse IA</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================
+       ÉTAPE 6 — ANALYSE IA
+       ============================ -->
+  <div class="step-panel" id="step-6">
+    <div class="card">
+      <div class="card-title">Étape 6 — Analyse de votre situation-problème par l'IA</div>
+
+      <p>L'IA va analyser votre situation-problème à la lumière des critères de la didactique de l'enseignement secondaire belge francophone (Perrenoud, Meirieu, APC). Elle produira un retour qualitatif, une grille critériée et des suggestions de reformulation.</p>
+
+      <div class="api-section">
+        <div class="api-header">
+          <span style="font-size:1.4rem">🔑</span>
+          <h3>Clé API Anthropic requise</h3>
+        </div>
+        <p class="text-small" style="margin-bottom:12px">Votre clé API n'est <strong>jamais transmise à nos serveurs</strong>. Elle est utilisée directement depuis votre navigateur pour interroger l'API Anthropic. Obtenez votre clé sur <a href="https://console.anthropic.com" target="_blank" rel="noopener" style="color:var(--bleu)">console.anthropic.com</a>.</p>
+        <div class="api-row">
+          <input type="password" id="api-key" placeholder="sk-ant-api03-...">
+          <button class="btn btn-outline btn-sm" onclick="toggleApiKeyVisibility()" id="btn-toggle-key">Afficher</button>
+        </div>
+        <div id="alert-api" class="field-alert" style="margin-top:8px">
+          <span class="alert-icon">⚠</span>
+          <span id="alert-api-text">Veuillez entrer une clé API valide (commence par sk-ant-).</span>
+        </div>
+      </div>
+
+      <!-- Récapitulatif avant analyse -->
+      <div id="recap-before-analysis" class="callout callout-bleu">
+        <div class="callout-title">Récapitulatif de votre situation-problème</div>
+        <div id="recap-content" style="font-size:.88rem; margin-top:6px"></div>
+      </div>
+
+      <div style="text-align:center; margin: 20px 0">
+        <button class="btn btn-bord btn-lg" id="btn-analyze" onclick="analyzeWithAI()">
+          🤖 Analyser ma situation-problème avec l'IA
+        </button>
+      </div>
+
+      <!-- Loading -->
+      <div class="loading-state" id="loading-state">
+        <div class="spinner"></div>
+        <p style="color:var(--bleu); font-weight:600">Analyse en cours…</p>
+        <p class="text-small">L'IA examine votre situation-problème selon les critères de la didactique de l'APC. Cela peut prendre quelques secondes.</p>
+      </div>
+
+      <!-- Résultat -->
+      <div class="ai-result" id="ai-result">
+
+        <div class="card-subtitle" style="margin-top:0">a) Retour qualitatif</div>
+        <div id="ai-qualitatif" style="font-size:.92rem; line-height:1.7"></div>
+
+        <hr class="sep">
+        <div class="card-subtitle">b) Grille d'évaluation critériée</div>
+        <div style="overflow-x:auto">
+          <table class="grille-table" id="grille-table">
+            <thead>
+              <tr>
+                <th>Critère</th>
+                <th>Niveau</th>
+                <th>Commentaire</th>
+              </tr>
+            </thead>
+            <tbody id="grille-body"></tbody>
+          </table>
+        </div>
+
+        <hr class="sep">
+        <div class="card-subtitle">c) Suggestions de reformulation</div>
+        <div id="ai-suggestions" style="font-size:.92rem; line-height:1.7"></div>
+
+        <div style="text-align:right; margin-top:16px">
+          <button class="btn btn-primary" onclick="goTo(7)">Passer à l'export →</button>
+        </div>
+      </div>
+
+      <div id="ai-error" style="display:none" class="callout callout-bord">
+        <div class="callout-title">Erreur lors de l'analyse</div>
+        <p id="ai-error-text"></p>
+      </div>
+
+      <div class="nav-buttons">
+        <button class="btn btn-ghost" onclick="goTo(5)">← Retour</button>
+        <div class="spacer"></div>
+        <button class="btn btn-ghost btn-sm" onclick="goTo(7)" style="opacity:.6">Passer l'analyse IA →</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================
+       ÉTAPE 7 — EXPORT
+       ============================ -->
+  <div class="step-panel" id="step-7">
+    <div class="card" id="export-card">
+      <div class="card-title">Étape 7 — Synthèse et export</div>
+
+      <div class="highlight-box" style="margin-bottom:20px">
+        <h2>Votre situation-problème est construite !</h2>
+        <p>Voici le récapitulatif complet de votre travail, prêt à être copié, imprimé ou enregistré en PDF.</p>
+      </div>
+
+      <!-- Synthèse données -->
+      <div class="synthese-section">
+        <h3>📋 Informations générales</h3>
+        <div class="synthese-row"><span class="s-label">Matière :</span><span class="s-val" id="syn-matiere"></span></div>
+        <div class="synthese-row"><span class="s-label">Niveau de classe :</span><span class="s-val" id="syn-niveau"></span></div>
+        <div class="synthese-row"><span class="s-label">Thème de la leçon :</span><span class="s-val" id="syn-theme"></span></div>
+        <div class="synthese-row"><span class="s-label">Groupe d'élèves :</span><span class="s-val" id="syn-groupe">—</span></div>
+      </div>
+
+      <hr class="sep">
+
+      <div class="synthese-section">
+        <h3>🎯 Objectif d'apprentissage</h3>
+        <div class="synthese-text" id="syn-objectif"></div>
+      </div>
+
+      <div class="synthese-section">
+        <h3>🔧 Approche didactique choisie</h3>
+        <div class="synthese-row"><span class="s-val" id="syn-approche"></span></div>
+      </div>
+
+      <hr class="sep">
+
+      <div class="synthese-section">
+        <h3>📝 Situation-problème construite</h3>
+
+        <div style="margin-bottom:10px">
+          <span style="font-weight:600; color:var(--bleu); font-size:.9rem; display:block; margin-bottom:4px">Contexte narratif :</span>
+          <div class="synthese-text" id="syn-contexte"></div>
+        </div>
+
+        <div style="margin-bottom:10px" id="syn-supports-wrap">
+          <span style="font-weight:600; color:var(--bleu); font-size:.9rem; display:block; margin-bottom:4px">Documents / supports :</span>
+          <div class="synthese-text" id="syn-supports"></div>
+        </div>
+
+        <div style="margin-bottom:10px" id="syn-contraintes-wrap">
+          <span style="font-weight:600; color:var(--bleu); font-size:.9rem; display:block; margin-bottom:4px">Contraintes :</span>
+          <div class="synthese-text" id="syn-contraintes"></div>
+        </div>
+
+        <div style="margin-bottom:10px">
+          <span style="font-weight:600; color:var(--bord); font-size:.9rem; display:block; margin-bottom:4px">❓ Question centrale :</span>
+          <div class="synthese-text" style="border-left-color:var(--bord); background:var(--bord-tr)" id="syn-question"></div>
+        </div>
+
+        <div style="margin-bottom:10px">
+          <span style="font-weight:600; color:var(--bleu); font-size:.9rem; display:block; margin-bottom:4px">Productions attendues :</span>
+          <div class="synthese-text" id="syn-productions"></div>
+        </div>
+      </div>
+
+      <!-- Analyse IA dans la synthèse -->
+      <div id="syn-ia-wrap" style="display:none">
+        <hr class="sep">
+        <div class="synthese-section">
+          <h3>🤖 Analyse IA (Formateur expert en didactique)</h3>
+
+          <div style="margin-bottom:14px">
+            <span style="font-weight:600; color:var(--bleu); font-size:.9rem; display:block; margin-bottom:8px">Retour qualitatif :</span>
+            <div id="syn-ia-qualitatif" style="font-size:.9rem; line-height:1.7; background:var(--gris-cl); padding:14px 16px; border-radius:6px"></div>
+          </div>
+
+          <div style="margin-bottom:14px; overflow-x:auto">
+            <span style="font-weight:600; color:var(--bleu); font-size:.9rem; display:block; margin-bottom:8px">Grille critériée :</span>
+            <table class="grille-table" id="syn-grille-table">
+              <thead><tr><th>Critère</th><th>Niveau</th><th>Commentaire</th></tr></thead>
+              <tbody id="syn-grille-body"></tbody>
+            </table>
+          </div>
+
+          <div>
+            <span style="font-weight:600; color:var(--bleu); font-size:.9rem; display:block; margin-bottom:8px">Suggestions de reformulation :</span>
+            <div id="syn-ia-suggestions" style="font-size:.9rem; line-height:1.7; background:var(--vert-tr); padding:14px 16px; border-radius:6px; border-left:3px solid var(--vert)"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Boutons export -->
+      <hr class="sep">
+      <div style="display:flex; gap:12px; flex-wrap:wrap; justify-content:center; margin-top:10px">
+        <button class="btn btn-outline" onclick="copyAll()">📋 Copier tout le texte</button>
+        <button class="btn btn-bord" onclick="printExport()">🖨 Imprimer / Télécharger en PDF</button>
+        <button class="btn btn-ghost" onclick="goTo(1)">🔄 Recommencer</button>
+      </div>
+
+      <div id="copy-feedback" style="display:none; text-align:center; margin-top:10px; color:var(--vert); font-weight:600; font-size:.9rem">
+        ✅ Texte copié dans le presse-papier !
+      </div>
+
+      <div class="nav-buttons">
+        <button class="btn btn-ghost" onclick="goTo(6)">← Retour</button>
+      </div>
+    </div>
+  </div>
+
+</main>
+
+<script>
+// ===========================
+// STATE
+// ===========================
+let currentStep = 1;
+const totalSteps = 7;
+let selectedApproach = null;
+let aiAnalysisResult = null;
+
+// ===========================
+// NAVIGATION
+// ===========================
+function goTo(step) {
+  document.getElementById('step-' + currentStep).classList.remove('active');
+  currentStep = step;
+  document.getElementById('step-' + currentStep).classList.add('active');
+  updateProgress();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+
+  if (step === 6) buildRecap();
+  if (step === 7) buildSynthesis();
+}
+
+function updateProgress() {
+  const pct = (currentStep / totalSteps) * 100;
+  document.getElementById('progress-bar').style.width = pct + '%';
+  document.getElementById('step-indicator').textContent = 'Étape ' + currentStep + ' sur ' + totalSteps;
+}
+
+function validateAndGo(fromStep, toStep) {
+  if (fromStep === 2) {
+    const matiere = document.getElementById('f-matiere').value.trim();
+    const niveau  = document.getElementById('f-niveau').value;
+    const theme   = document.getElementById('f-theme').value.trim();
+    if (!matiere || !niveau || !theme) {
+      alert('Merci de remplir au minimum la matière, le niveau de classe et le thème de la leçon.');
+      return;
+    }
+  }
+  if (fromStep === 3) {
+    const obj = document.getElementById('f-objectif').value.trim();
+    if (obj.length < 20) {
+      alert('Merci de décrire l\'objectif d\'apprentissage (au moins quelques mots).');
+      return;
+    }
+  }
+  if (fromStep === 4) {
+    if (!selectedApproach) {
+      document.getElementById('approach-alert').style.display = 'flex';
+      return;
+    }
+  }
+  if (fromStep === 5) {
+    const contexte    = document.getElementById('f-contexte').value.trim();
+    const question    = document.getElementById('f-question').value.trim();
+    const productions = document.getElementById('f-productions').value.trim();
+    if (!contexte || !question || !productions) {
+      alert('Merci de remplir au minimum le contexte narratif, la question centrale et les productions attendues.');
+      return;
+    }
+  }
+  goTo(toStep);
+}
+
+// ===========================
+// APPROACH SELECTION
+// ===========================
+const approachData = {
+  conflit: {
+    title: '⚡ Conflit cognitif — Conseils pour la construction',
+    text: 'Pour cette approche, commencez par identifier la représentation initiale erronée que vos élèves ont probablement sur le sujet. Votre contexte narratif doit les amener à formuler cette représentation, puis à la confronter à une donnée qui la met en défaut.'
+  },
+  obstacle: {
+    title: '🧱 Obstacle à franchir — Conseils pour la construction',
+    text: 'Identifiez précisément l\'obstacle cognitif que vos élèves vont rencontrer. Le contexte doit les mettre en situation de ne pas pouvoir avancer sans construire un nouvel outil conceptuel. Veillez à ce que cet obstacle soit franchissable avec l\'outillage que vous comptez leur apporter.'
+  },
+  reel: {
+    title: '🌍 Ancrage dans le réel — Conseils pour la construction',
+    text: 'Choisissez un contexte authentique, crédible et qui fait sens pour vos élèves. Évitez les contextes trop scolaires ou artificiels. La situation doit être de celles que l\'on pourrait réellement rencontrer dans la vie sociale, professionnelle ou citoyenne.'
+  },
+  investigation: {
+    title: '🔍 Approche par investigation — Conseils pour la construction',
+    text: 'La question centrale doit véritablement ouvrir une enquête. Fournissez des données suffisantes pour formuler des hypothèses, mais pas assez pour conclure directement. L\'incertitude doit être réelle : plusieurs hypothèses doivent être plausibles au départ.'
+  }
+};
+
+function selectApproach(card, value) {
+  document.querySelectorAll('.approach-card').forEach(c => c.classList.remove('selected'));
+  card.classList.add('selected');
+  card.querySelector('input[type="radio"]').checked = true;
+  selectedApproach = value;
+  document.getElementById('approach-alert').style.display = 'none';
+
+  const tip = approachData[value];
+  const tipEl = document.getElementById('approach-tip');
+  document.getElementById('approach-tip-title').textContent = tip.title;
+  document.getElementById('approach-tip-text').textContent = tip.text;
+  tipEl.style.display = 'block';
+}
+
+// ===========================
+// DISCIPLINE EXAMPLES
+// ===========================
+const disciplineExamples = {
+  bio: {
+    title: '🔬 Biologie',
+    obj: 'Comprendre le mécanisme de la sélection naturelle et expliquer l\'évolution adaptative d\'une espèce.',
+    sp: 'Des scientifiques ont observé que les phalènes du bouleau, qui étaient majoritairement blanches au XVIIIe siècle, sont devenues majoritairement noires en Angleterre industrielle au XIXe siècle. Vous êtes biologiste. Comment expliquez-vous ce changement et qu\'en concluez-vous sur le mécanisme qui le provoque ?'
+  },
+  hist: {
+    title: '📜 Histoire',
+    obj: 'Analyser les causes et les responsabilités dans le déclenchement de la Première Guerre mondiale à partir de sources primaires.',
+    sp: 'Vous êtes correspondant de guerre en 1914. Votre rédacteur en chef vous demande d\'écrire un article de 300 mots expliquant à vos lecteurs qui est responsable du déclenchement de la guerre. Vous disposez de quatre documents diplomatiques de juillet-août 1914 (télégrammes, ultimatums). Rédigez cet article en justifiant votre analyse.'
+  },
+  maths: {
+    title: '📐 Mathématiques',
+    obj: 'Comprendre la différence entre pourcentages successifs et pourcentage global.',
+    sp: 'Un ami vous annonce qu\'il a trouvé la meilleure affaire : un téléphone d\'abord soldé à -30%, puis encore réduit de -20% lors d\'une vente flash. Il est convaincu qu\'il économise 50%. Vous lui dites que non. Comment lui prouvez-vous et quelle est la réduction réelle ?'
+  },
+  fle: {
+    title: '✍️ Français',
+    obj: 'Maîtriser les codes de la lettre de motivation et adapter son discours à un destinataire précis.',
+    sp: 'Votre meilleur ami vient de vous envoyer sa lettre de motivation pour un job étudiant. Elle est remplie de fautes et de maladresses. Il vous demande de l\'aider à la corriger avant l\'envoi de demain matin. Voici sa lettre. Identifiez les problèmes et proposez-lui une version améliorée en lui expliquant vos choix.'
+  },
+  eco: {
+    title: '📊 Économie',
+    obj: 'Comprendre les mécanismes de l\'offre et de la demande et leur impact sur la formation des prix.',
+    sp: 'En 2022, le prix des œufs a augmenté de 40% en quelques semaines en Belgique. Vous travaillez pour une association de consommateurs. Votre responsable vous demande de préparer une fiche explicative pour informer les ménages des raisons de cette hausse. Utilisez les données économiques fournies.'
+  },
+  ep: {
+    title: '🏃 Éducation physique',
+    obj: 'Planifier un entraînement adapté à un objectif physique précis en appliquant les principes de la charge et de la récupération.',
+    sp: 'Votre cousin de 16 ans veut courir le 10 km de la course de la ville dans 8 semaines. Il n\'a jamais couru plus de 3 km. Il vous demande de lui créer un plan d\'entraînement. Construisez ce plan en justifiant vos choix (fréquence, intensité, progression) à partir des principes de l\'entraînement.'
+  }
+};
+
+function showDisciplineEx(key) {
+  const d = disciplineExamples[key];
+  document.getElementById('discipline-example').style.display = 'block';
+  document.getElementById('disc-ex-title').textContent = d.title;
+  document.getElementById('disc-ex-obj').textContent = d.obj;
+  document.getElementById('disc-ex-sp').textContent = d.sp;
+}
+
+// ===========================
+// REAL-TIME ALERTS (step 5)
+// ===========================
+function setAlert(id, visible) {
+  const el = document.getElementById(id);
+  if (el) {
+    el.classList.toggle('visible', visible);
+    el.style.display = visible ? 'flex' : 'none';
+  }
+}
+
+function checkContexte() {
+  const val = document.getElementById('f-contexte').value.trim();
+  const len = val.length;
+  document.getElementById('contexte-count').textContent = len + ' caractères';
+  document.getElementById('contexte-count').className = 'char-count' + (len < 80 ? ' warn' : '');
+
+  setAlert('alert-contexte-absent', len > 5 && len < 60);
+
+  const coursKeywords = ['dans le cadre', 'dans le cours', 'dans cette leçon', 'objectif de cette leçon', 'séance de cours', 'pour cette activité scolaire'];
+  const hasCours = coursKeywords.some(k => val.toLowerCase().includes(k));
+  setAlert('alert-contexte-cours', hasCours);
+}
+
+function checkQuestion() {
+  const val = document.getElementById('f-question').value.trim();
+  const len = val.length;
+  document.getElementById('question-count').textContent = len + ' caractères';
+
+  // Count sentences/questions
+  const questionMarks = (val.match(/\?/g) || []).length;
+  setAlert('alert-multi-questions', questionMarks > 1);
+
+  // Closed question signals
+  const fermeeSignals = [/^(est-ce que|est-ce qu')/i, /^(quel est|quelle est)\s+l[ae]\s+/i, /répondez par oui ou non/i, /^(vrai ou faux)/i];
+  const isFermee = fermeeSignals.some(r => r.test(val));
+  setAlert('alert-question-fermee', isFermee && questionMarks <= 1);
+
+  // Definition signals
+  const defSignals = [/qu['']?est[-\s]ce qu[e']/i, /définissez/i, /donnez la définition/i, /c['']?est quoi/i];
+  const isDef = defSignals.some(r => r.test(val));
+  setAlert('alert-definition', isDef);
+}
+
+function checkSupports() {
+  const supports = document.getElementById('f-supports').value.trim().toLowerCase();
+  const question = document.getElementById('f-question').value.trim().toLowerCase();
+  // Heuristic: if both have similar long words, flag
+  const supportWords = supports.split(/\s+/).filter(w => w.length > 6);
+  const qWords = question.split(/\s+/).filter(w => w.length > 6);
+  const overlap = supportWords.filter(w => qWords.includes(w)).length;
+  setAlert('alert-reponse-support', supports.length > 20 && overlap > 4);
+}
+
+// char count for objectif
+function checkObjectif() {
+  const val = document.getElementById('f-objectif').value;
+  document.getElementById('objectif-count').textContent = val.length + ' caractères';
+}
+
+// Wire events when DOM ready
+document.addEventListener('DOMContentLoaded', () => {
+  document.getElementById('f-contexte').addEventListener('input', checkContexte);
+  document.getElementById('f-question').addEventListener('input', checkQuestion);
+  document.getElementById('f-supports').addEventListener('input', checkSupports);
+  document.getElementById('f-objectif').addEventListener('input', checkObjectif);
+});
+
+// ===========================
+// API KEY TOGGLE
+// ===========================
+function toggleApiKeyVisibility() {
+  const inp = document.getElementById('api-key');
+  const btn = document.getElementById('btn-toggle-key');
+  if (inp.type === 'password') {
+    inp.type = 'text';
+    btn.textContent = 'Masquer';
+  } else {
+    inp.type = 'password';
+    btn.textContent = 'Afficher';
+  }
+}
+
+// ===========================
+// BUILD RECAP (step 6)
+// ===========================
+function buildRecap() {
+  const approachLabels = {
+    conflit: 'Conflit cognitif (Piaget)',
+    obstacle: 'Obstacle à franchir (Meirieu)',
+    reel: 'Ancrage dans le réel (Perrenoud / APC)',
+    investigation: 'Approche par investigation (Dewey)'
+  };
+
+  const fields = [
+    ['Matière',            document.getElementById('f-matiere').value.trim()],
+    ['Niveau',             document.getElementById('f-niveau').value],
+    ['Thème',              document.getElementById('f-theme').value.trim()],
+    ['Objectif',           document.getElementById('f-objectif').value.trim()],
+    ['Approche',           selectedApproach ? approachLabels[selectedApproach] : '—'],
+    ['Contexte',           document.getElementById('f-contexte').value.trim()],
+    ['Supports',           document.getElementById('f-supports').value.trim() || '—'],
+    ['Contraintes',        document.getElementById('f-contraintes').value.trim() || '—'],
+    ['Question centrale',  document.getElementById('f-question').value.trim()],
+    ['Productions',        document.getElementById('f-productions').value.trim()],
+  ];
+
+  const html = fields.map(([label, val]) =>
+    `<div style="margin-bottom:6px"><strong style="color:var(--bleu)">${label} :</strong> ${escapeHtml(val)}</div>`
+  ).join('');
+
+  document.getElementById('recap-content').innerHTML = html;
+}
+
+// ===========================
+// AI ANALYSIS
+// ===========================
+async function analyzeWithAI() {
+  const apiKey = document.getElementById('api-key').value.trim();
+  const alertEl = document.getElementById('alert-api');
+
+  if (!apiKey || !apiKey.startsWith('sk-ant-')) {
+    alertEl.style.display = 'flex';
+    document.getElementById('alert-api-text').textContent = 'Veuillez entrer une clé API Anthropic valide (elle commence par sk-ant-).';
+    return;
+  }
+  alertEl.style.display = 'none';
+
+  const approachLabels = {
+    conflit: 'Conflit cognitif (Piaget)',
+    obstacle: 'Obstacle à franchir (Meirieu)',
+    reel: 'Ancrage dans le réel (Perrenoud / APC)',
+    investigation: 'Approche par investigation (Dewey)'
+  };
+
+  const data = {
+    matiere:     document.getElementById('f-matiere').value.trim(),
+    niveau:      document.getElementById('f-niveau').value,
+    theme:       document.getElementById('f-theme').value.trim(),
+    groupe:      document.getElementById('f-groupe').value.trim(),
+    objectif:    document.getElementById('f-objectif').value.trim(),
+    approche:    selectedApproach ? approachLabels[selectedApproach] : '—',
+    contexte:    document.getElementById('f-contexte').value.trim(),
+    supports:    document.getElementById('f-supports').value.trim(),
+    contraintes: document.getElementById('f-contraintes').value.trim(),
+    question:    document.getElementById('f-question').value.trim(),
+    productions: document.getElementById('f-productions').value.trim(),
+  };
+
+  const systemPrompt = `Tu es un formateur expert en didactique de l'enseignement secondaire belge francophone, spécialiste de l'approche par compétences (APC). Tu maîtrises les travaux de Philippe Perrenoud (notamment "Construire des compétences dès l'école"), de Philippe Meirieu ("Apprendre... oui, mais comment"), et de Gaston Bachelard (concept d'obstacle épistémologique). Tu connais le Décret du 3 mai 2019 portant le Code de l'enseignement fondamental et de l'enseignement secondaire de la Communauté française de Belgique.
+
+Tu analyses des situations-problèmes construites par des étudiants du Certificat d'Aptitudes Pédagogiques (CAP) de l'enseignement secondaire supérieur en Belgique francophone.
+
+Les défauts fréquents à détecter sont :
+1. Situation trop fermée (réponse unique, pas de vrai problème)
+2. Réponse contenue dans le support fourni
+3. Contexte décontextualisé ou non vraisemblable
+4. Simple exercice de restitution/mémorisation déguisé
+5. Questions multiples et compartimentées (au lieu d'une question intégratrice)
+6. Question posant une définition plutôt qu'un problème
+7. Déconstruction idéologique prématurée
+8. Situation ne relevant pas de la démarche disciplinaire visée
+
+Les critères d'une bonne situation-problème sont :
+- Ancrage contextuel fort (vraisemblance, pragmatisme)
+- Ouverture du problème (plusieurs voies de résolution possibles)
+- Mobilisation de compétences (savoirs + savoir-faire + attitudes)
+- Clarté de la consigne (UNE seule question centrale et ouverte)
+- Adéquation à l'objectif d'apprentissage (sans le dévoiler)
+- Évitement des défauts classiques
+
+Tu vas produire une analyse structurée EN FRANÇAIS, en trois parties séparées par des balises spéciales.
+
+IMPORTANT : Réponds UNIQUEMENT avec le JSON suivant, sans texte avant ni après :
+
+{
+  "qualitatif": "Texte de retour qualitatif en HTML simple (utilise <strong>, <em>, <ul><li>, <p>). Commence par les points forts (au moins 2), puis les points à améliorer (au moins 2). Sois précis et bienveillant.",
+  "grille": [
+    {
+      "critere": "Ancrage contextuel",
+      "niveau": "insuffisant|en développement|maîtrisé|expert",
+      "commentaire": "Commentaire concis et précis"
+    },
+    {
+      "critere": "Ouverture du problème",
+      "niveau": "insuffisant|en développement|maîtrisé|expert",
+      "commentaire": "Commentaire concis et précis"
+    },
+    {
+      "critere": "Mobilisation de compétences",
+      "niveau": "insuffisant|en développement|maîtrisé|expert",
+      "commentaire": "Commentaire concis et précis"
+    },
+    {
+      "critere": "Clarté de la consigne",
+      "niveau": "insuffisant|en développement|maîtrisé|expert",
+      "commentaire": "Commentaire concis et précis"
+    },
+    {
+      "critere": "Adéquation à l'objectif",
+      "niveau": "insuffisant|en développement|maîtrisé|expert",
+      "commentaire": "Commentaire concis et précis"
+    },
+    {
+      "critere": "Évitement des défauts classiques",
+      "niveau": "insuffisant|en développement|maîtrisé|expert",
+      "commentaire": "Commentaire concis et précis"
+    }
+  ],
+  "suggestions": "Texte de suggestions de reformulation en HTML simple. Propose une version améliorée du contexte narratif ET de la question centrale. Mets chaque version améliorée dans un bloc <blockquote>. Explique brièvement pourquoi ces reformulations sont meilleures."
+}`;
+
+  const userMessage = `Voici la situation-problème à analyser :
+
+**CONTEXTE D'ENSEIGNEMENT**
+- Matière : ${data.matiere}
+- Niveau de classe : ${data.niveau}
+- Thème de la leçon : ${data.theme}
+- Groupe d'élèves : ${data.groupe || 'Non précisé'}
+
+**OBJECTIF D'APPRENTISSAGE**
+${data.objectif}
+
+**APPROCHE DIDACTIQUE CHOISIE**
+${data.approche}
+
+**SITUATION-PROBLÈME CONSTRUITE**
+
+Contexte narratif :
+${data.contexte}
+
+Documents / supports proposés :
+${data.supports || 'Aucun précisé'}
+
+Contraintes imposées :
+${data.contraintes || 'Aucune précisée'}
+
+Question centrale posée aux élèves :
+${data.question}
+
+Productions attendues des élèves :
+${data.productions}
+
+Analyse cette situation-problème selon les critères de la didactique de l'APC et produis le JSON demandé.`;
+
+  // Show loading
+  document.getElementById('btn-analyze').disabled = true;
+  document.getElementById('loading-state').classList.add('visible');
+  document.getElementById('ai-result').classList.remove('visible');
+  document.getElementById('ai-error').style.display = 'none';
+
+  try {
+    const response = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'x-api-key': apiKey,
+        'anthropic-version': '2023-06-01',
+        'anthropic-dangerous-direct-browser-calls': 'true'
+      },
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-20250514',
+        max_tokens: 2048,
+        system: systemPrompt,
+        messages: [{ role: 'user', content: userMessage }]
+      })
+    });
+
+    if (!response.ok) {
+      const err = await response.json().catch(() => ({}));
+      throw new Error(err.error?.message || `Erreur HTTP ${response.status}`);
+    }
+
+    const result = await response.json();
+    const text = result.content?.[0]?.text || '';
+
+    // Parse JSON from response
+    const jsonMatch = text.match(/\{[\s\S]*\}/);
+    if (!jsonMatch) throw new Error('La réponse de l\'IA n\'est pas au format attendu.');
+
+    const parsed = JSON.parse(jsonMatch[0]);
+    aiAnalysisResult = parsed;
+
+    // Render qualitative
+    document.getElementById('ai-qualitatif').innerHTML = parsed.qualitatif || '';
+
+    // Render grille
+    const tbody = document.getElementById('grille-body');
+    tbody.innerHTML = '';
+    (parsed.grille || []).forEach(row => {
+      const tr = document.createElement('tr');
+      const niveauClass = {
+        'insuffisant': 'niveau-insuf',
+        'en développement': 'niveau-dev',
+        'maîtrisé': 'niveau-mait',
+        'expert': 'niveau-exp'
+      }[row.niveau] || 'niveau-dev';
+
+      tr.innerHTML = `
+        <td><strong>${escapeHtml(row.critere)}</strong></td>
+        <td><span class="niveau-badge ${niveauClass}">${escapeHtml(row.niveau)}</span></td>
+        <td>${escapeHtml(row.commentaire)}</td>
+      `;
+      tbody.appendChild(tr);
+    });
+
+    // Render suggestions
+    document.getElementById('ai-suggestions').innerHTML = parsed.suggestions || '';
+
+    document.getElementById('ai-result').classList.add('visible');
+
+  } catch (err) {
+    document.getElementById('ai-error').style.display = 'block';
+    document.getElementById('ai-error-text').textContent = 'Erreur : ' + err.message;
+  } finally {
+    document.getElementById('loading-state').classList.remove('visible');
+    document.getElementById('btn-analyze').disabled = false;
+  }
+}
+
+// ===========================
+// BUILD SYNTHESIS (step 7)
+// ===========================
+function buildSynthesis() {
+  const approachLabels = {
+    conflit: '⚡ Conflit cognitif (Piaget)',
+    obstacle: '🧱 Obstacle à franchir (Meirieu)',
+    reel: '🌍 Ancrage dans le réel (Perrenoud / APC)',
+    investigation: '🔍 Approche par investigation (Dewey)'
+  };
+
+  document.getElementById('syn-matiere').textContent    = document.getElementById('f-matiere').value.trim() || '—';
+  document.getElementById('syn-niveau').textContent     = document.getElementById('f-niveau').value || '—';
+  document.getElementById('syn-theme').textContent      = document.getElementById('f-theme').value.trim() || '—';
+  document.getElementById('syn-groupe').textContent     = document.getElementById('f-groupe').value.trim() || '—';
+  document.getElementById('syn-objectif').textContent   = document.getElementById('f-objectif').value.trim();
+  document.getElementById('syn-approche').textContent   = selectedApproach ? approachLabels[selectedApproach] : '—';
+  document.getElementById('syn-contexte').textContent   = document.getElementById('f-contexte').value.trim();
+  document.getElementById('syn-question').textContent   = document.getElementById('f-question').value.trim();
+  document.getElementById('syn-productions').textContent = document.getElementById('f-productions').value.trim();
+
+  const supports = document.getElementById('f-supports').value.trim();
+  const contraintes = document.getElementById('f-contraintes').value.trim();
+
+  if (supports) {
+    document.getElementById('syn-supports').textContent = supports;
+    document.getElementById('syn-supports-wrap').style.display = 'block';
+  } else {
+    document.getElementById('syn-supports-wrap').style.display = 'none';
+  }
+
+  if (contraintes) {
+    document.getElementById('syn-contraintes').textContent = contraintes;
+    document.getElementById('syn-contraintes-wrap').style.display = 'block';
+  } else {
+    document.getElementById('syn-contraintes-wrap').style.display = 'none';
+  }
+
+  // AI synthesis
+  if (aiAnalysisResult) {
+    document.getElementById('syn-ia-wrap').style.display = 'block';
+    document.getElementById('syn-ia-qualitatif').innerHTML = aiAnalysisResult.qualitatif || '';
+    document.getElementById('syn-ia-suggestions').innerHTML = aiAnalysisResult.suggestions || '';
+
+    const synTbody = document.getElementById('syn-grille-body');
+    synTbody.innerHTML = '';
+    (aiAnalysisResult.grille || []).forEach(row => {
+      const tr = document.createElement('tr');
+      const niveauClass = {
+        'insuffisant': 'niveau-insuf',
+        'en développement': 'niveau-dev',
+        'maîtrisé': 'niveau-mait',
+        'expert': 'niveau-exp'
+      }[row.niveau] || 'niveau-dev';
+      tr.innerHTML = `
+        <td><strong>${escapeHtml(row.critere)}</strong></td>
+        <td><span class="niveau-badge ${niveauClass}">${escapeHtml(row.niveau)}</span></td>
+        <td>${escapeHtml(row.commentaire)}</td>
+      `;
+      synTbody.appendChild(tr);
+    });
+  } else {
+    document.getElementById('syn-ia-wrap').style.display = 'none';
+  }
+}
+
+// ===========================
+// COPY ALL
+// ===========================
+function copyAll() {
+  const approachLabels = {
+    conflit: 'Conflit cognitif (Piaget)',
+    obstacle: 'Obstacle à franchir (Meirieu)',
+    reel: 'Ancrage dans le réel (Perrenoud / APC)',
+    investigation: 'Approche par investigation (Dewey)'
+  };
+
+  let text = '';
+  text += '=== SITUATION-PROBLÈME — CAP BELGIQUE FRANCOPHONE ===\n\n';
+  text += 'INFORMATIONS GÉNÉRALES\n';
+  text += '• Matière : ' + (document.getElementById('f-matiere').value.trim() || '—') + '\n';
+  text += '• Niveau : ' + (document.getElementById('f-niveau').value || '—') + '\n';
+  text += '• Thème : ' + (document.getElementById('f-theme').value.trim() || '—') + '\n';
+  text += '• Groupe : ' + (document.getElementById('f-groupe').value.trim() || '—') + '\n\n';
+  text += 'OBJECTIF D\'APPRENTISSAGE\n';
+  text += document.getElementById('f-objectif').value.trim() + '\n\n';
+  text += 'APPROCHE DIDACTIQUE\n';
+  text += (selectedApproach ? approachLabels[selectedApproach] : '—') + '\n\n';
+  text += 'SITUATION-PROBLÈME\n\n';
+  text += 'Contexte narratif :\n' + document.getElementById('f-contexte').value.trim() + '\n\n';
+
+  const supports = document.getElementById('f-supports').value.trim();
+  if (supports) text += 'Documents / supports :\n' + supports + '\n\n';
+
+  const contraintes = document.getElementById('f-contraintes').value.trim();
+  if (contraintes) text += 'Contraintes :\n' + contraintes + '\n\n';
+
+  text += 'Question centrale :\n' + document.getElementById('f-question').value.trim() + '\n\n';
+  text += 'Productions attendues :\n' + document.getElementById('f-productions').value.trim() + '\n\n';
+
+  if (aiAnalysisResult) {
+    text += '=== ANALYSE IA ===\n\n';
+    // Strip HTML tags for plain text
+    const stripHtml = (html) => {
+      const tmp = document.createElement('div');
+      tmp.innerHTML = html;
+      return tmp.textContent || tmp.innerText || '';
+    };
+    text += 'RETOUR QUALITATIF\n';
+    text += stripHtml(aiAnalysisResult.qualitatif || '') + '\n\n';
+    text += 'GRILLE CRITÉRIÉE\n';
+    (aiAnalysisResult.grille || []).forEach(row => {
+      text += `• ${row.critere} : ${row.niveau.toUpperCase()} — ${row.commentaire}\n`;
+    });
+    text += '\nSUGGESTIONS DE REFORMULATION\n';
+    text += stripHtml(aiAnalysisResult.suggestions || '') + '\n';
+  }
+
+  navigator.clipboard.writeText(text).then(() => {
+    const fb = document.getElementById('copy-feedback');
+    fb.style.display = 'block';
+    setTimeout(() => { fb.style.display = 'none'; }, 3000);
+  }).catch(() => {
+    alert('Impossible d\'accéder au presse-papier. Sélectionnez manuellement le texte et copiez-le.');
+  });
+}
+
+// ===========================
+// PRINT
+// ===========================
+function printExport() {
+  window.print();
+}
+
+// ===========================
+// UTILS
+// ===========================
+function escapeHtml(str) {
+  if (!str) return '';
+  return str
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/\n/g, '<br>');
+}
+</script>
+
+</body>
+</html>
