@@ -89,6 +89,29 @@
     letter-spacing: .5px;
   }
 
+  .progress-labels span {
+    padding: 2px 4px;
+    border-radius: 4px;
+    transition: background .15s, color .15s;
+  }
+
+  .progress-labels span.reachable {
+    cursor: pointer;
+    color: rgba(255,255,255,.85);
+  }
+
+  .progress-labels span.reachable:hover {
+    background: rgba(255,255,255,.18);
+    color: #fff;
+    text-decoration: underline;
+  }
+
+  .progress-labels span.current {
+    color: #fff;
+    background: rgba(255,255,255,.12);
+    text-decoration: underline;
+  }
+
   .progress-bar-outer {
     background: rgba(255,255,255,.2);
     border-radius: 99px;
@@ -456,6 +479,14 @@
   }
   .btn-ghost:hover { background: var(--gris-cl); color: var(--texte); }
 
+  .btn-back {
+    background: var(--bleu-tr);
+    color: var(--bleu);
+    border: 2px solid var(--bleu);
+    font-weight: 700;
+  }
+  .btn-back:hover { background: var(--bleu); color: #fff; box-shadow: 0 2px 8px rgba(26,58,92,.3); }
+
   .btn-vert {
     background: var(--vert);
     color: white;
@@ -617,14 +648,52 @@
     white-space: pre-wrap;
   }
 
+  /* ===== EXPORT OPTIONS (step 7) ===== */
+  .export-options {
+    background: var(--gris-cl);
+    border: 1.5px solid var(--gris-bd);
+    border-radius: var(--radius);
+    padding: 16px 20px;
+    margin-bottom: 20px;
+  }
+
+  .export-options .export-options-title {
+    font-weight: 700;
+    font-size: .9rem;
+    color: var(--bleu);
+    margin-bottom: 10px;
+  }
+
+  .export-checkboxes {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px 22px;
+  }
+
+  .export-checkbox {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    font-size: .9rem;
+    cursor: pointer;
+  }
+
+  .export-checkbox input[type="checkbox"] {
+    width: 17px;
+    height: 17px;
+    accent-color: var(--bleu);
+    cursor: pointer;
+  }
+
   /* ===== PRINT STYLES ===== */
   @media print {
-    header, .nav-buttons, .api-section, #btn-analyze, .btn { display: none !important; }
+    header, .nav-buttons, .api-section, .export-options, #btn-analyze, .btn { display: none !important; }
     body { background: white; font-size: 12pt; }
     .card { box-shadow: none; border: 1px solid #ddd; margin-bottom: 14pt; }
     .step-panel { display: block !important; }
     main { padding: 0; max-width: 100%; }
     .grille-table th { background: #1a3a5c !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    .export-excluded { display: none !important; }
   }
 
   /* ===== MISC ===== */
@@ -679,7 +748,7 @@
   </div>
   <div class="progress-wrap">
     <div class="progress-labels" id="progress-labels">
-      <span>Accueil</span><span>Contexte</span><span>Objectif</span><span>Approche</span><span>Construction</span><span>Analyse IA</span><span>Export</span>
+      <span data-step="1" onclick="goToLabel(1)">Accueil</span><span data-step="2" onclick="goToLabel(2)">Contexte</span><span data-step="3" onclick="goToLabel(3)">Objectif</span><span data-step="4" onclick="goToLabel(4)">Approche</span><span data-step="5" onclick="goToLabel(5)">Construction</span><span data-step="6" onclick="goToLabel(6)">Analyse IA</span><span data-step="7" onclick="goToLabel(7)">Export</span>
     </div>
     <div class="progress-bar-outer">
       <div class="progress-bar-inner" id="progress-bar" style="width:14.28%"></div>
@@ -816,7 +885,7 @@
       </div>
 
       <div class="nav-buttons">
-        <button class="btn btn-ghost" onclick="goTo(1)">← Retour</button>
+        <button class="btn btn-back" onclick="goTo(1)">← Retour</button>
         <button class="btn btn-primary" onclick="validateAndGo(2,3)">Suivant → Étape 3 : Objectif</button>
       </div>
     </div>
@@ -865,7 +934,7 @@
       </div>
 
       <div class="nav-buttons">
-        <button class="btn btn-ghost" onclick="goTo(2)">← Retour</button>
+        <button class="btn btn-back" onclick="goTo(2)">← Retour</button>
         <button class="btn btn-primary" onclick="validateAndGo(3,4)">Suivant → Étape 4 : Approche</button>
       </div>
     </div>
@@ -930,7 +999,7 @@
       </div>
 
       <div class="nav-buttons">
-        <button class="btn btn-ghost" onclick="goTo(3)">← Retour</button>
+        <button class="btn btn-back" onclick="goTo(3)">← Retour</button>
         <button class="btn btn-primary" onclick="validateAndGo(4,5)">Suivant → Étape 5 : Construction</button>
       </div>
     </div>
@@ -1022,7 +1091,7 @@
       </div>
 
       <div class="nav-buttons">
-        <button class="btn btn-ghost" onclick="goTo(4)">← Retour</button>
+        <button class="btn btn-back" onclick="goTo(4)">← Retour</button>
         <button class="btn btn-primary" onclick="validateAndGo(5,6)">Suivant → Étape 6 : Analyse IA</button>
       </div>
     </div>
@@ -1108,7 +1177,7 @@
       </div>
 
       <div class="nav-buttons">
-        <button class="btn btn-ghost" onclick="goTo(5)">← Retour</button>
+        <button class="btn btn-back" onclick="goTo(5)">← Retour</button>
         <div class="spacer"></div>
         <button class="btn btn-ghost btn-sm" onclick="goTo(7)" style="opacity:.6">Passer l'analyse IA →</button>
       </div>
@@ -1128,6 +1197,7 @@
       </div>
 
       <!-- Synthèse données -->
+      <div id="syn-section-infos">
       <div class="synthese-section">
         <h3>📋 Informations générales</h3>
         <div class="synthese-row"><span class="s-label">Matière :</span><span class="s-val" id="syn-matiere"></span></div>
@@ -1135,9 +1205,11 @@
         <div class="synthese-row"><span class="s-label">Thème de la leçon :</span><span class="s-val" id="syn-theme"></span></div>
         <div class="synthese-row"><span class="s-label">Groupe d'élèves :</span><span class="s-val" id="syn-groupe">—</span></div>
       </div>
+      </div>
 
       <hr class="sep">
 
+      <div id="syn-section-objectif">
       <div class="synthese-section">
         <h3>🎯 Objectif d'apprentissage</h3>
         <div class="synthese-text" id="syn-objectif"></div>
@@ -1147,9 +1219,11 @@
         <h3>🔧 Approche didactique choisie</h3>
         <div class="synthese-row"><span class="s-val" id="syn-approche"></span></div>
       </div>
+      </div>
 
       <hr class="sep">
 
+      <div id="syn-section-situation">
       <div class="synthese-section">
         <h3>📝 Situation-problème construite</h3>
 
@@ -1178,6 +1252,7 @@
           <div class="synthese-text" id="syn-productions"></div>
         </div>
       </div>
+      </div>
 
       <!-- Analyse IA dans la synthèse -->
       <div id="syn-ia-wrap" style="display:none">
@@ -1205,8 +1280,19 @@
         </div>
       </div>
 
-      <!-- Boutons export -->
+      <!-- Choix des sections à exporter -->
       <hr class="sep">
+      <div class="export-options">
+        <div class="export-options-title">Sections à inclure dans l'export (copie / impression / PDF)</div>
+        <div class="export-checkboxes">
+          <label class="export-checkbox"><input type="checkbox" id="chk-export-infos" checked> Informations générales</label>
+          <label class="export-checkbox"><input type="checkbox" id="chk-export-objectif" checked> Objectif et approche</label>
+          <label class="export-checkbox"><input type="checkbox" id="chk-export-situation" checked> Situation-problème</label>
+          <label class="export-checkbox" id="chk-export-ia-wrap" style="display:none"><input type="checkbox" id="chk-export-ia" checked> Analyse IA</label>
+        </div>
+      </div>
+
+      <!-- Boutons export -->
       <div style="display:flex; gap:12px; flex-wrap:wrap; justify-content:center; margin-top:10px">
         <button class="btn btn-outline" onclick="copyAll()">📋 Copier tout le texte</button>
         <button class="btn btn-bord" onclick="printExport()">🖨 Imprimer / Télécharger en PDF</button>
@@ -1218,7 +1304,7 @@
       </div>
 
       <div class="nav-buttons">
-        <button class="btn btn-ghost" onclick="goTo(6)">← Retour</button>
+        <button class="btn btn-back" onclick="goTo(6)">← Retour</button>
       </div>
     </div>
   </div>
@@ -1231,6 +1317,7 @@
 // ===========================
 let currentStep = 1;
 const totalSteps = 7;
+let maxStepReached = 1;
 let selectedApproach = null;
 let aiAnalysisResult = null;
 
@@ -1241,6 +1328,7 @@ function goTo(step) {
   document.getElementById('step-' + currentStep).classList.remove('active');
   currentStep = step;
   document.getElementById('step-' + currentStep).classList.add('active');
+  if (step > maxStepReached) maxStepReached = step;
   updateProgress();
   window.scrollTo({ top: 0, behavior: 'smooth' });
 
@@ -1248,10 +1336,24 @@ function goTo(step) {
   if (step === 7) buildSynthesis();
 }
 
+// Navigation via la barre de progression : on ne peut revenir
+// qu'aux étapes déjà atteintes (pas sauter en avant).
+function goToLabel(step) {
+  if (step <= maxStepReached) {
+    goTo(step);
+  }
+}
+
 function updateProgress() {
   const pct = (currentStep / totalSteps) * 100;
   document.getElementById('progress-bar').style.width = pct + '%';
   document.getElementById('step-indicator').textContent = 'Étape ' + currentStep + ' sur ' + totalSteps;
+
+  document.querySelectorAll('#progress-labels span').forEach(span => {
+    const s = parseInt(span.dataset.step, 10);
+    span.classList.toggle('current', s === currentStep);
+    span.classList.toggle('reachable', s <= maxStepReached && s !== currentStep);
+  });
 }
 
 function validateAndGo(fromStep, toStep) {
@@ -1435,6 +1537,7 @@ document.addEventListener('DOMContentLoaded', () => {
   document.getElementById('f-question').addEventListener('input', checkQuestion);
   document.getElementById('f-supports').addEventListener('input', checkSupports);
   document.getElementById('f-objectif').addEventListener('input', checkObjectif);
+  updateProgress();
 });
 
 // ===========================
@@ -1728,6 +1831,7 @@ function buildSynthesis() {
   }
 
   // AI synthesis
+  document.getElementById('chk-export-ia-wrap').style.display = aiAnalysisResult ? 'flex' : 'none';
   if (aiAnalysisResult) {
     document.getElementById('syn-ia-wrap').style.display = 'block';
     document.getElementById('syn-ia-qualitatif').innerHTML = aiAnalysisResult.qualitatif || '';
@@ -1766,30 +1870,44 @@ function copyAll() {
     investigation: 'Approche par investigation (Dewey)'
   };
 
+  const includeInfos     = document.getElementById('chk-export-infos').checked;
+  const includeObjectif  = document.getElementById('chk-export-objectif').checked;
+  const includeSituation = document.getElementById('chk-export-situation').checked;
+  const includeIA        = aiAnalysisResult && document.getElementById('chk-export-ia').checked;
+
   let text = '';
   text += '=== SITUATION-PROBLÈME — CAP BELGIQUE FRANCOPHONE ===\n\n';
-  text += 'INFORMATIONS GÉNÉRALES\n';
-  text += '• Matière : ' + (document.getElementById('f-matiere').value.trim() || '—') + '\n';
-  text += '• Niveau : ' + (document.getElementById('f-niveau').value || '—') + '\n';
-  text += '• Thème : ' + (document.getElementById('f-theme').value.trim() || '—') + '\n';
-  text += '• Groupe : ' + (document.getElementById('f-groupe').value.trim() || '—') + '\n\n';
-  text += 'OBJECTIF D\'APPRENTISSAGE\n';
-  text += document.getElementById('f-objectif').value.trim() + '\n\n';
-  text += 'APPROCHE DIDACTIQUE\n';
-  text += (selectedApproach ? approachLabels[selectedApproach] : '—') + '\n\n';
-  text += 'SITUATION-PROBLÈME\n\n';
-  text += 'Contexte narratif :\n' + document.getElementById('f-contexte').value.trim() + '\n\n';
 
-  const supports = document.getElementById('f-supports').value.trim();
-  if (supports) text += 'Documents / supports :\n' + supports + '\n\n';
+  if (includeInfos) {
+    text += 'INFORMATIONS GÉNÉRALES\n';
+    text += '• Matière : ' + (document.getElementById('f-matiere').value.trim() || '—') + '\n';
+    text += '• Niveau : ' + (document.getElementById('f-niveau').value || '—') + '\n';
+    text += '• Thème : ' + (document.getElementById('f-theme').value.trim() || '—') + '\n';
+    text += '• Groupe : ' + (document.getElementById('f-groupe').value.trim() || '—') + '\n\n';
+  }
 
-  const contraintes = document.getElementById('f-contraintes').value.trim();
-  if (contraintes) text += 'Contraintes :\n' + contraintes + '\n\n';
+  if (includeObjectif) {
+    text += 'OBJECTIF D\'APPRENTISSAGE\n';
+    text += document.getElementById('f-objectif').value.trim() + '\n\n';
+    text += 'APPROCHE DIDACTIQUE\n';
+    text += (selectedApproach ? approachLabels[selectedApproach] : '—') + '\n\n';
+  }
 
-  text += 'Question centrale :\n' + document.getElementById('f-question').value.trim() + '\n\n';
-  text += 'Productions attendues :\n' + document.getElementById('f-productions').value.trim() + '\n\n';
+  if (includeSituation) {
+    text += 'SITUATION-PROBLÈME\n\n';
+    text += 'Contexte narratif :\n' + document.getElementById('f-contexte').value.trim() + '\n\n';
 
-  if (aiAnalysisResult) {
+    const supports = document.getElementById('f-supports').value.trim();
+    if (supports) text += 'Documents / supports :\n' + supports + '\n\n';
+
+    const contraintes = document.getElementById('f-contraintes').value.trim();
+    if (contraintes) text += 'Contraintes :\n' + contraintes + '\n\n';
+
+    text += 'Question centrale :\n' + document.getElementById('f-question').value.trim() + '\n\n';
+    text += 'Productions attendues :\n' + document.getElementById('f-productions').value.trim() + '\n\n';
+  }
+
+  if (includeIA) {
     text += '=== ANALYSE IA ===\n\n';
     // Strip HTML tags for plain text
     const stripHtml = (html) => {
@@ -1820,6 +1938,35 @@ function copyAll() {
 // PRINT
 // ===========================
 function printExport() {
+  const sections = [
+    ['chk-export-infos',     'syn-section-infos'],
+    ['chk-export-objectif',  'syn-section-objectif'],
+    ['chk-export-situation', 'syn-section-situation'],
+    ['chk-export-ia',        'syn-ia-wrap'],
+  ];
+
+  const toggled = [];
+  sections.forEach(([chkId, sectionId]) => {
+    const chk = document.getElementById(chkId);
+    const section = document.getElementById(sectionId);
+    if (!chk || !section) return;
+    if (!chk.checked) {
+      section.classList.add('export-excluded');
+      toggled.push(section);
+    }
+  });
+
+  let restored = false;
+  const restore = () => {
+    if (restored) return;
+    restored = true;
+    toggled.forEach(el => el.classList.remove('export-excluded'));
+    window.removeEventListener('afterprint', restore);
+  };
+  window.addEventListener('afterprint', restore);
+  // Filet de sécurité pour les navigateurs où "afterprint" n'est pas fiable.
+  setTimeout(restore, 60000);
+
   window.print();
 }
 
