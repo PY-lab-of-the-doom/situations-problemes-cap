@@ -3,6 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Guide interactif en 7 étapes pour aider les enseignants et étudiants du CAP à construire une situation-problème pédagogique de qualité, avec analyse IA et export PDF.">
 <title>Outil d'aide à la construction d'une situation-problème</title>
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>%F0%9F%A7%A9</text></svg>">
 <style>
@@ -351,24 +352,6 @@
   input[type="number"]:focus,
   select:focus,
   textarea:focus {
-    outline: none;
-    border-color: var(--bleu-cl);
-    box-shadow: 0 0 0 3px rgba(0,109,119,.12);
-  }
-
-  input[type="password"] {
-    width: 100%;
-    padding: 10px 14px;
-    border: 1.5px solid var(--gris-bd);
-    border-radius: 6px;
-    font-size: .93rem;
-    font-family: monospace;
-    color: var(--texte);
-    background: var(--blanc);
-    transition: border-color .2s, box-shadow .2s;
-  }
-
-  input[type="password"]:focus {
     outline: none;
     border-color: var(--bleu-cl);
     box-shadow: 0 0 0 3px rgba(0,109,119,.12);
@@ -1598,21 +1581,6 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 // ===========================
-// API KEY TOGGLE
-// ===========================
-function toggleApiKeyVisibility() {
-  const inp = document.getElementById('api-key');
-  const btn = document.getElementById('btn-toggle-key');
-  if (inp.type === 'password') {
-    inp.type = 'text';
-    btn.textContent = 'Masquer';
-  } else {
-    inp.type = 'password';
-    btn.textContent = 'Afficher';
-  }
-}
-
-// ===========================
 // BUILD RECAP (step 6)
 // ===========================
 function buildRecap() {
@@ -1801,7 +1769,7 @@ Analyse cette situation-problème selon les critères de la didactique de l'APC 
     aiAnalysisResult = parsed;
 
     // Render qualitative
-    document.getElementById('ai-qualitatif').innerHTML = parsed.qualitatif || '';
+    document.getElementById('ai-qualitatif').innerHTML = sanitizeHtml(parsed.qualitatif);
 
     // Render grille
     const tbody = document.getElementById('grille-body');
@@ -1824,7 +1792,7 @@ Analyse cette situation-problème selon les critères de la didactique de l'APC 
     });
 
     // Render suggestions
-    document.getElementById('ai-suggestions').innerHTML = parsed.suggestions || '';
+    document.getElementById('ai-suggestions').innerHTML = sanitizeHtml(parsed.suggestions);
 
     document.getElementById('ai-result').classList.add('visible');
 
@@ -1879,8 +1847,8 @@ function buildSynthesis() {
   document.getElementById('chk-export-ia-wrap').style.display = aiAnalysisResult ? 'flex' : 'none';
   if (aiAnalysisResult) {
     document.getElementById('syn-ia-wrap').style.display = 'block';
-    document.getElementById('syn-ia-qualitatif').innerHTML = aiAnalysisResult.qualitatif || '';
-    document.getElementById('syn-ia-suggestions').innerHTML = aiAnalysisResult.suggestions || '';
+    document.getElementById('syn-ia-qualitatif').innerHTML = sanitizeHtml(aiAnalysisResult.qualitatif);
+    document.getElementById('syn-ia-suggestions').innerHTML = sanitizeHtml(aiAnalysisResult.suggestions);
 
     const synTbody = document.getElementById('syn-grille-body');
     synTbody.innerHTML = '';
@@ -2026,6 +1994,28 @@ function escapeHtml(str) {
     .replace(/>/g, '&gt;')
     .replace(/"/g, '&quot;')
     .replace(/\n/g, '<br>');
+}
+
+// Sanitize HTML returned by the AI: keep only a safe whitelist of formatting tags
+function sanitizeHtml(html) {
+  const allowed = new Set(['STRONG','EM','B','I','UL','OL','LI','P','BR']);
+  const tmp = document.createElement('div');
+  tmp.innerHTML = html || '';
+
+  (function clean(node) {
+    [...node.childNodes].forEach(child => {
+      if (child.nodeType === 1) {
+        if (!allowed.has(child.tagName)) {
+          node.replaceChild(document.createTextNode(child.textContent), child);
+          return;
+        }
+        [...child.attributes].forEach(attr => child.removeAttribute(attr.name));
+        clean(child);
+      }
+    });
+  })(tmp);
+
+  return tmp.innerHTML;
 }
 </script>
 
