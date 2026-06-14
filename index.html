@@ -38,7 +38,11 @@
     color: var(--texte);
     background: var(--gris-cl);
     min-height: 100vh;
+    display: flex;
+    flex-direction: column;
   }
+
+  main { flex: 1; }
 
   /* ===== HEADER ===== */
   header {
@@ -55,6 +59,14 @@
     max-width: 900px;
     margin: 0 auto;
     padding: 14px 24px 10px;
+  }
+
+  .header-logo {
+    display: block;
+    height: 64px;
+    width: auto;
+    margin: 0 auto 8px;
+    border-radius: 8px;
   }
 
   .header-inner h1 {
@@ -685,9 +697,42 @@
     cursor: pointer;
   }
 
+  /* ===== FOOTER ===== */
+  .site-footer {
+    background: var(--bleu);
+    color: rgba(255,255,255,.85);
+    padding: 14px 24px;
+  }
+
+  .site-footer-inner {
+    max-width: 900px;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    flex-wrap: wrap;
+  }
+
+  .footer-cc-badge {
+    height: 28px;
+    width: auto;
+    flex-shrink: 0;
+  }
+
+  .site-footer-inner p {
+    font-size: .76rem;
+    margin-bottom: 0;
+    line-height: 1.5;
+  }
+
+  .site-footer-inner a {
+    color: #fff;
+    text-decoration: underline;
+  }
+
   /* ===== PRINT STYLES ===== */
   @media print {
-    header, .nav-buttons, .api-section, .export-options, #btn-analyze, .btn { display: none !important; }
+    header, .site-footer, .nav-buttons, .api-section, .export-options, #btn-analyze, .btn { display: none !important; }
     body { background: white; font-size: 12pt; }
     .card { box-shadow: none; border: 1px solid #ddd; margin-bottom: 14pt; }
     .step-panel { display: block !important; }
@@ -743,6 +788,7 @@
 
 <header>
   <div class="header-inner">
+    <img src="20240824_AIA_FR_EN-1.png" alt="Logo AIA" class="header-logo">
     <h1 style="text-align:center;font-size:2rem;">Outil d'aide à la construction d'une situation-problème</h1>
     <p style="text-align:center;font-size:0.85rem;margin-top:0.4rem;opacity:0.85;">Réalisé par <a href="https://linktr.ee/peter7nance" target="_blank" rel="noopener" style="color:inherit;text-decoration:underline;">Pierre-Yves Sevenants</a> à l'aide de Claude.ai</p>
   </div>
@@ -1301,6 +1347,15 @@
   </div>
 
 </main>
+
+<footer class="site-footer">
+  <div class="site-footer-inner">
+    <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank" rel="noopener">
+      <img src="by-nc-sa.png" alt="Licence Creative Commons BY-NC-SA" class="footer-cc-badge">
+    </a>
+    <p>Cette ressource est distribuée sous licence <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank" rel="noopener">Creative Commons BY-NC-SA 4.0</a> — Attribution, usage non commercial, partage dans les mêmes conditions.</p>
+  </div>
+</footer>
 
 <script>
 // ===========================
