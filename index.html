@@ -61,13 +61,6 @@
     padding: 14px 24px 10px;
   }
 
-  .header-logo {
-    display: block;
-    height: 64px;
-    width: auto;
-    margin: 0 auto 8px;
-    border-radius: 8px;
-  }
 
   .header-inner h1 {
     font-size: 1.15rem;
@@ -719,6 +712,13 @@
     flex-shrink: 0;
   }
 
+  .footer-aia-logo {
+    height: 40px;
+    width: auto;
+    flex-shrink: 0;
+    border-radius: 6px;
+  }
+
   .site-footer-inner p {
     font-size: .76rem;
     margin-bottom: 0;
@@ -788,7 +788,6 @@
 
 <header>
   <div class="header-inner">
-    <img src="20240824_AIA_FR_EN-1.png" alt="Logo AIA" class="header-logo">
     <h1 style="text-align:center;font-size:2rem;">Outil d'aide à la construction d'une situation-problème</h1>
     <p style="text-align:center;font-size:0.85rem;margin-top:0.4rem;opacity:0.85;">Réalisé par <a href="https://linktr.ee/peter7nance" target="_blank" rel="noopener" style="color:inherit;text-decoration:underline;">Pierre-Yves Sevenants</a> à l'aide de Claude.ai</p>
   </div>
@@ -812,7 +811,7 @@
     <div class="card">
       <div class="highlight-box">
         <h2>Bienvenue dans le guide de construction d'une situation-problème</h2>
-        <p>Cet outil vous accompagne, étape par étape, pour concevoir une situation-problème de qualité destinée à vos élèves.</p>
+        <p>Cet outil vous accompagne, étape par étape, pour concevoir une situation-problème de qualité destinée à vos apprenants.</p>
       </div>
 
       <div class="card-title">Distinction fondamentale à connaître avant de commencer</div>
@@ -885,7 +884,7 @@
       <p>Ces informations permettront à l'outil (et à l'analyse IA) de contextualiser les retours. Soyez précis.</p>
 
       <div class="form-group">
-        <label for="f-matiere">Matière enseignée <span class="optional">— soyez précis (ex : « Biologie », « Histoire-Géo », « Français langue de l'enseignement »)</span></label>
+        <label for="f-matiere">Matière enseignée <span class="optional">— soyez précis (ex : « Biologie », « Histoire », « Sciences Sociales »)</span></label>
         <input type="text" id="f-matiere" placeholder="Ex : Sciences économiques, Mathématiques, Français, Éducation physique...">
       </div>
 
@@ -900,17 +899,17 @@
             <option>4ème secondaire (4S)</option>
             <option>5ème secondaire (5S)</option>
             <option>6ème secondaire (6S)</option>
-            <option>7ème secondaire (7S)</option>
           </optgroup>
           <optgroup label="Filière de qualification">
             <option>3ème Technique de Qualification (3TQ)</option>
             <option>4ème Technique de Qualification (4TQ)</option>
             <option>5ème Technique de Qualification (5TQ)</option>
             <option>6ème Technique de Qualification (6TQ)</option>
-            <option>3ème Professionnelle (3P)</option>
-            <option>4ème Professionnelle (4P)</option>
-            <option>5ème Professionnelle (5P)</option>
-            <option>6ème Professionnelle (6P)</option>
+            <option>7ème Technique de Qualification (7TQ)</option>
+          </optgroup>
+          <optgroup label="Enseignement pour Adultes">
+            <option>EA secondaire</option>
+            <option>EA supérieur</option>
           </optgroup>
           <optgroup label="Autre">
             <option>Enseignement en alternance (CEFA)</option>
@@ -1350,6 +1349,7 @@
 
 <footer class="site-footer">
   <div class="site-footer-inner">
+    <img src="20240824_AIA_FR_EN-1.png" alt="Logo AIA" class="footer-aia-logo">
     <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank" rel="noopener">
       <img src="by-nc-sa.png" alt="Licence Creative Commons BY-NC-SA" class="footer-cc-badge">
     </a>
