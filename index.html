@@ -923,6 +923,11 @@
         <div class="field-hint">Ces informations aident à calibrer le niveau de complexité de la situation-problème.</div>
       </div>
 
+      <div id="step2-alert" class="field-alert" role="alert" style="display:none">
+        <span class="alert-icon">⚠</span>
+        <span>Merci de remplir la matière, le niveau de classe, le thème de la leçon et la description du groupe d'élèves.</span>
+      </div>
+
       <div class="nav-buttons">
         <button class="btn btn-back" onclick="goTo(1)">← Retour</button>
         <button class="btn btn-primary" onclick="validateAndGo(2,3)">Suivant → Étape 3 : Objectif</button>
@@ -970,6 +975,11 @@
       <div class="callout callout-warn" style="margin-top:16px">
         <div class="callout-title">⚠ Vigilance — L'objectif ne doit pas être lu par l'élève</div>
         <p>Ne commencez jamais votre situation-problème par une phrase du type : « L'objectif de cette leçon est de comprendre X. » L'élève doit construire sa compréhension de X <em>en résolvant</em> la situation.</p>
+      </div>
+
+      <div id="step3-alert" class="field-alert" role="alert" style="display:none">
+        <span class="alert-icon">⚠</span>
+        <span>Merci de décrire l'objectif d'apprentissage (au moins quelques mots).</span>
       </div>
 
       <div class="nav-buttons">
@@ -1127,6 +1137,11 @@
           <li>Ma question est-elle vraiment ouverte, ou oriente-t-elle trop la réponse ?</li>
           <li>Ai-je posé plusieurs questions ? Si oui, puis-je les fusionner en une seule ?</li>
         </ul>
+      </div>
+
+      <div id="step5-alert" class="field-alert" role="alert" style="display:none">
+        <span class="alert-icon">⚠</span>
+        <span>Merci de remplir au minimum le contexte narratif, la question centrale et les productions attendues.</span>
       </div>
 
       <div class="nav-buttons">
@@ -1331,6 +1346,9 @@
       <div id="copy-feedback" style="display:none; text-align:center; margin-top:10px; color:var(--vert); font-weight:600; font-size:.9rem">
         ✅ Texte copié dans le presse-papier !
       </div>
+      <div id="copy-error" role="alert" style="display:none; text-align:center; margin-top:10px; color:var(--warn); font-weight:600; font-size:.9rem">
+        ⚠ Impossible d'accéder au presse-papier. Sélectionnez manuellement le texte et copiez-le.
+      </div>
 
       <div class="nav-buttons">
         <button class="btn btn-back" onclick="goTo(6)">← Retour</button>
@@ -1402,16 +1420,18 @@ function validateAndGo(fromStep, toStep) {
     const theme   = document.getElementById('f-theme').value.trim();
     const groupe  = document.getElementById('f-groupe').value.trim();
     if (!matiere || !niveau || !theme || !groupe) {
-      alert('Merci de remplir la matière, le niveau de classe, le thème de la leçon et la description du groupe d\'élèves.');
+      document.getElementById('step2-alert').style.display = 'flex';
       return;
     }
+    document.getElementById('step2-alert').style.display = 'none';
   }
   if (fromStep === 3) {
     const obj = document.getElementById('f-objectif').value.trim();
     if (obj.length < 20) {
-      alert('Merci de décrire l\'objectif d\'apprentissage (au moins quelques mots).');
+      document.getElementById('step3-alert').style.display = 'flex';
       return;
     }
+    document.getElementById('step3-alert').style.display = 'none';
   }
   if (fromStep === 4) {
     if (!selectedApproach) {
@@ -1424,9 +1444,10 @@ function validateAndGo(fromStep, toStep) {
     const question    = document.getElementById('f-question').value.trim();
     const productions = document.getElementById('f-productions').value.trim();
     if (!contexte || !question || !productions) {
-      alert('Merci de remplir au minimum le contexte narratif, la question centrale et les productions attendues.');
+      document.getElementById('step5-alert').style.display = 'flex';
       return;
     }
+    document.getElementById('step5-alert').style.display = 'none';
   }
   goTo(toStep);
 }
@@ -1943,7 +1964,9 @@ function copyAll() {
     fb.style.display = 'block';
     setTimeout(() => { fb.style.display = 'none'; }, 3000);
   }).catch(() => {
-    alert('Impossible d\'accéder au presse-papier. Sélectionnez manuellement le texte et copiez-le.');
+    const err = document.getElementById('copy-error');
+    err.style.display = 'block';
+    setTimeout(() => { err.style.display = 'none'; }, 5000);
   });
 }
 
