@@ -919,7 +919,7 @@
 
       <div class="form-group">
         <label for="f-groupe">Description du groupe d'élèves — public cible <span class="required">*</span></label>
-        <textarea id="f-groupe" rows="3" placeholder="Ex : Classe de 22 élèves, profil hétérogène, plusieurs allophones, faible motivation pour la matière. Certains ont des difficultés de lecture..."></textarea>
+        <textarea id="f-groupe" rows="3" maxlength="1000" placeholder="Ex : Classe de 22 élèves, profil hétérogène, plusieurs allophones, faible motivation pour la matière. Certains ont des difficultés de lecture..."></textarea>
         <div class="field-hint">Ces informations aident à calibrer le niveau de complexité de la situation-problème.</div>
       </div>
 
@@ -949,7 +949,7 @@
 
       <div class="form-group">
         <label for="f-objectif">Décrivez l'objectif opérationnel principal sous la forme <em>« À la fin de la leçon, les apprenants seront capables de… »</em></label>
-        <textarea id="f-objectif" rows="4" placeholder="Ex : À la fin de la leçon, les apprenants seront capables de comprendre la notion de sélection naturelle et de l'appliquer à des exemples concrets.&#10;Ex : À la fin de la leçon, les apprenants seront capables de lire et d'interpréter un graphique statistique pour en tirer des conclusions argumentées.&#10;Ex : À la fin de la leçon, les apprenants seront capables de maîtriser les accords du participe passé avec l'auxiliaire avoir."></textarea>
+        <textarea id="f-objectif" rows="4" maxlength="800" placeholder="Ex : À la fin de la leçon, les apprenants seront capables de comprendre la notion de sélection naturelle et de l'appliquer à des exemples concrets.&#10;Ex : À la fin de la leçon, les apprenants seront capables de lire et d'interpréter un graphique statistique pour en tirer des conclusions argumentées.&#10;Ex : À la fin de la leçon, les apprenants seront capables de maîtriser les accords du participe passé avec l'auxiliaire avoir."></textarea>
         <div id="objectif-count" class="char-count">0 caractères</div>
       </div>
 
@@ -1069,7 +1069,7 @@
       <!-- 5.1 Contexte narratif -->
       <div class="form-group">
         <label for="f-contexte">1. Contexte narratif <span class="optional">— Qui ? Quoi ? Où ? Situation vraisemblable</span></label>
-        <textarea id="f-contexte" rows="5"
+        <textarea id="f-contexte" rows="5" maxlength="2500"
           placeholder="Décrivez une situation concrète et vraisemblable dans laquelle se trouvent les personnages ou le rôle attribué à l'élève.&#10;&#10;Ex : « Vous êtes journaliste stagiaire pour le journal de votre commune. La rédactrice en chef vous demande de rédiger un article sur l'évolution de la population de votre ville entre 1990 et 2020. Elle vous remet trois graphiques issus du SPF Économie... »"></textarea>
         <div id="contexte-count" class="char-count">0 caractères</div>
         <div id="alert-contexte-absent" class="field-alert">
@@ -1085,7 +1085,7 @@
       <!-- 5.2 Supports -->
       <div class="form-group">
         <label for="f-supports">2. Documents ou supports proposés aux élèves <span class="optional">(facultatif si pas de support)</span></label>
-        <textarea id="f-supports" rows="3"
+        <textarea id="f-supports" rows="3" maxlength="1500"
           placeholder="Listez les documents, données ou ressources que vous remettrez aux élèves (sans les coller ici).&#10;Ex : « Graphique de l'évolution démographique (SPF Économie), extrait d'article de presse de 2018, tableau comparatif de 3 communes. »"></textarea>
         <div id="alert-reponse-support" class="field-alert">
           <span class="alert-icon">⚠</span>
@@ -1096,7 +1096,7 @@
       <!-- 5.3 Contraintes -->
       <div class="form-group">
         <label for="f-contraintes">3. Contraintes imposées <span class="optional">(facultatif)</span></label>
-        <textarea id="f-contraintes" rows="3"
+        <textarea id="f-contraintes" rows="3" maxlength="800"
           placeholder="Ex : « Vous disposez de 45 minutes. Vous ne pouvez pas utiliser Internet. Vous devez justifier votre réponse avec au moins deux arguments tirés des documents. »"></textarea>
         <div class="field-hint">Les contraintes délimitent le cadre de la résolution et empêchent les stratégies d'évitement.</div>
       </div>
@@ -1104,7 +1104,7 @@
       <!-- 5.4 Question centrale -->
       <div class="form-group">
         <label for="f-question">4. Question centrale posée aux élèves</label>
-        <textarea id="f-question" rows="3"
+        <textarea id="f-question" rows="3" maxlength="800"
           placeholder="Formulez UNE SEULE question ouverte. Évitez les listes de sous-questions.&#10;Ex : « Comment expliquer l'évolution observée de la population de votre commune et quelles en sont les conséquences possibles pour les prochaines années ? »"></textarea>
         <div id="question-count" class="char-count">0 caractères</div>
         <div id="alert-multi-questions" class="field-alert">
@@ -1124,7 +1124,7 @@
       <!-- 5.5 Productions attendues -->
       <div class="form-group">
         <label for="f-productions">5. Productions attendues des élèves</label>
-        <textarea id="f-productions" rows="3"
+        <textarea id="f-productions" rows="3" maxlength="1000"
           placeholder="Qu'est-ce que les élèves doivent remettre ou présenter à l'issue de la situation-problème ?&#10;Ex : « Un texte argumentatif de 15 à 20 lignes, une affiche, un tableau comparatif, une présentation orale de 3 minutes, un schéma annoté... »"></textarea>
         <div class="field-hint">La production attendue doit être une trace de la démarche, pas uniquement de la réponse finale.</div>
       </div>
