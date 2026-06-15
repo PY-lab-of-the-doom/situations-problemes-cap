@@ -1,6 +1,20 @@
+const MAX_BODY_LENGTH = 20000;
+
 exports.handler = async function(event) {
   if (event.httpMethod !== 'POST') {
     return { statusCode: 405, body: 'Method Not Allowed' };
+  }
+
+  // Vérifie que la requête provient bien de ce site (anti-proxy ouvert)
+  const host = event.headers.host || event.headers.Host;
+  const origin = event.headers.origin || event.headers.referer || event.headers.Referer;
+  if (!origin || !host || !origin.includes(host)) {
+    return { statusCode: 403, body: JSON.stringify({ error: { message: 'Origine non autorisée.' } }) };
+  }
+
+  // Limite la taille du payload pour éviter les abus de coûts
+  if (!event.body || event.body.length > MAX_BODY_LENGTH) {
+    return { statusCode: 413, body: JSON.stringify({ error: { message: 'Requête trop volumineuse.' } }) };
   }
 
   const apiKey = process.env.OPENAI_API_KEY;
@@ -49,9 +63,10 @@ exports.handler = async function(event) {
     };
 
   } catch (err) {
+    console.error('analyze function error:', err);
     return {
       statusCode: 500,
-      body: JSON.stringify({ error: { message: 'Erreur serveur : ' + err.message } })
+      body: JSON.stringify({ error: { message: 'Une erreur est survenue lors de l\'analyse. Merci de réessayer.' } })
     };
   }
 };
