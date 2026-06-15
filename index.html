@@ -1551,7 +1551,7 @@ function checkContexte() {
 
   setAlert('alert-contexte-absent', len > 5 && len < 60);
 
-  const coursKeywords = ['dans le cadre', 'dans le cours', 'dans cette leçon', 'objectif de cette leçon', 'séance de cours', 'pour cette activité scolaire'];
+  const coursKeywords = ['dans le cadre', 'dans le cours', 'dans cette leçon', 'dans ce cours', 'objectif de cette leçon', 'objectif de ce cours', 'séance de cours', 'pour cette activité scolaire', 'durant ce cours', 'pendant le cours', 'votre professeur vous demande', 'votre enseignant vous demande', 'pour le cours de', 'dans le cadre scolaire', 'exercice de'];
   const hasCours = coursKeywords.some(k => val.toLowerCase().includes(k));
   setAlert('alert-contexte-cours', hasCours);
 }
@@ -1576,14 +1576,28 @@ function checkQuestion() {
   setAlert('alert-definition', isDef);
 }
 
+// Mots génériques fréquents dans les deux champs sans rapport avec une fuite de réponse
+const SUPPORTS_STOPWORDS = new Set([
+  'document', 'documents', 'tableau', 'tableaux', 'graphique', 'graphiques',
+  'question', 'questions', 'situation', 'problème', 'activité', 'exercice',
+  'élèves', 'élève', 'apprenants', 'apprenant', 'réponse', 'réponses',
+  'ressource', 'ressources', 'information', 'informations', 'données',
+  'présenter', 'présentez', 'expliquez', 'justifiez', 'analysez', 'proposez',
+  'rédigez', 'décrivez', 'comparez', 'identifiez', 'extrait', 'article',
+  'comparatif', 'évolution'
+]);
+
 function checkSupports() {
   const supports = document.getElementById('f-supports').value.trim().toLowerCase();
   const question = document.getElementById('f-question').value.trim().toLowerCase();
-  // Heuristic: if both have similar long words, flag
-  const supportWords = supports.split(/\s+/).filter(w => w.length > 6);
-  const qWords = question.split(/\s+/).filter(w => w.length > 6);
+  // Heuristic: si des mots significatifs (>6 lettres, hors mots génériques) du support
+  // recouvrent une grande partie des mots-clés de la question, le support risque de
+  // contenir directement la réponse.
+  const supportWords = supports.split(/\s+/).filter(w => w.length > 6 && !SUPPORTS_STOPWORDS.has(w));
+  const qWords = question.split(/\s+/).filter(w => w.length > 6 && !SUPPORTS_STOPWORDS.has(w));
   const overlap = supportWords.filter(w => qWords.includes(w)).length;
-  setAlert('alert-reponse-support', supports.length > 20 && overlap > 4);
+  const ratio = qWords.length > 0 ? overlap / qWords.length : 0;
+  setAlert('alert-reponse-support', supports.length > 20 && overlap >= 3 && ratio >= 0.5);
 }
 
 // char count for objectif
