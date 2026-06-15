@@ -922,6 +922,12 @@
         <div class="defaut-item"><strong>⚠ Hors démarche disciplinaire</strong>La situation ne relève pas de la logique de la discipline visée.</div>
       </div>
 
+      <div class="callout callout-vert" style="margin-top:16px">
+        <div class="callout-title">📬 Envie de rester informé(e) ?</div>
+        <p>Inscrivez-vous à la newsletter pour être averti(e) des nouveautés de cet outil et de mes autres créations pédagogiques — rien d'autre, et désinscription en un clic à tout moment.</p>
+        <button class="btn btn-outline" onclick="goTo(8)">S'inscrire à la newsletter →</button>
+      </div>
+
       <div class="nav-buttons">
         <div class="spacer"></div>
         <button class="btn btn-primary btn-lg" onclick="goTo(2)">Commencer → Étape 2 : Votre contexte</button>
@@ -1413,14 +1419,20 @@
 
       <div class="nav-buttons">
         <button class="btn btn-back" onclick="goTo(6)">← Retour</button>
+        <button class="btn btn-outline" onclick="goTo(8)">📬 Recevoir les nouveautés →</button>
       </div>
     </div>
   </div>
 
-</main>
+  <!-- ============================
+       ÉTAPE 8 — NEWSLETTER
+       ============================ -->
+  <div class="step-panel" id="step-8">
+    <div class="card">
+      <div class="card-title">Restez informé(e) des nouveautés</div>
+      <p>Inscrivez-vous pour recevoir occasionnellement des nouvelles de cet outil et de mes autres créations pédagogiques.</p>
 
-<footer class="site-footer">
-  <div class="site-footer-newsletter">
+      <div class="site-footer-newsletter">
     <!-- Begin Brevo Form -->
     <div class="sib-form" style="text-align: center; background-color: #07a497;">
       <div id="sib-form-container" class="sib-form-container">
@@ -1527,8 +1539,19 @@
       </div>
     </div>
     <!-- End Brevo Form -->
+      </div>
+
+      <div class="nav-buttons">
+        <button class="btn btn-back" onclick="goTo(7)">← Retour</button>
+        <div class="spacer"></div>
+        <button class="btn btn-ghost" onclick="goTo(1)">🔄 Recommencer</button>
+      </div>
+    </div>
   </div>
 
+</main>
+
+<footer class="site-footer">
   <div class="site-footer-inner">
     <img src="20240824_AIA_FR_EN-1.png" alt="Logo AIA" class="footer-aia-logo">
     <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank" rel="noopener">
@@ -1555,7 +1578,7 @@ function goTo(step) {
   document.getElementById('step-' + currentStep).classList.remove('active');
   currentStep = step;
   document.getElementById('step-' + currentStep).classList.add('active');
-  if (step > maxStepReached) maxStepReached = step;
+  if (step > maxStepReached && step <= totalSteps) maxStepReached = step;
   updateProgress();
   window.scrollTo({ top: 0, behavior: 'smooth' });
 
@@ -1572,6 +1595,15 @@ function goToLabel(step) {
 }
 
 function updateProgress() {
+  const progressWrap = document.querySelector('.progress-wrap');
+
+  // L'étape 8 (newsletter) est hors du parcours en 7 étapes : on masque la barre de progression.
+  if (currentStep > totalSteps) {
+    progressWrap.style.display = 'none';
+    return;
+  }
+  progressWrap.style.display = '';
+
   const pct = (currentStep / totalSteps) * 100;
   document.getElementById('progress-bar').style.width = pct + '%';
   document.getElementById('step-indicator').textContent = 'Étape ' + currentStep + ' sur ' + totalSteps;
